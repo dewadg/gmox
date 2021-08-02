@@ -3,7 +3,7 @@
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
-import { start } from './server/server'
+import { start, stop } from './server/server'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -36,10 +36,17 @@ async function createWindow() {
     win.loadURL('app://./index.html')
   }
 
+  registerIpcHandlers()
+}
+
+function registerIpcHandlers() {
   ipcMain.handle('GRPC_SERVER_CHANNEL', async (event, arg) => {
     switch (arg) {
       case 'turnOn':
         start()
+        break
+      case 'turnOff':
+        stop()
         break
     }
   })
