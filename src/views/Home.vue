@@ -1,17 +1,20 @@
 <template>
   <div class="home">
-    <HelloWorld />
+    <GNavbar />
+    <GSidebar />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import GNavbar from '@/components/GNavbar'
+import GSidebar from '@/components/GSidebar'
 
 export default {
   name: 'Home',
+
   components: {
-    HelloWorld
+    GNavbar,
+    GSidebar
   }
 }
 </script>
