@@ -18,7 +18,7 @@ export function start() {
 
   const greeterProto = grpc.loadPackageDefinition(definition).Greeter
 
-  serverInstance = new grpc.Server
+  serverInstance = new grpc.Server()
 
   serverInstance.addService(greeterProto.service, {
     sayHello: (call, callback) => {
