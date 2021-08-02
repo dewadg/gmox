@@ -30,6 +30,7 @@
     padding: 0 15px;
     text-align: center;
     font-size: 1.1em;
+    color: $font-secondary;
   }
 }
 </style>
