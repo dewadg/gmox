@@ -3,7 +3,10 @@
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
-import { start, stop } from './server/server'
+
+import { CHOOSE_SINGLE_FILE, PARSE_PROTO_FILE } from './constants/ipcEvents'
+import { handleParseProtoFile } from './services/ipc/protoLoader'
+import { handleChooseSingleFile } from './services/ipc/fileChooser'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -40,16 +43,8 @@ async function createWindow() {
 }
 
 function registerIpcHandlers() {
-  ipcMain.handle('GRPC_SERVER_CHANNEL', async (event, arg) => {
-    switch (arg) {
-      case 'turnOn':
-        start()
-        break
-      case 'turnOff':
-        stop()
-        break
-    }
-  })
+  ipcMain.handle(CHOOSE_SINGLE_FILE, handleChooseSingleFile())
+  ipcMain.handle(PARSE_PROTO_FILE, handleParseProtoFile())
 }
 
 // Quit when all windows are closed.

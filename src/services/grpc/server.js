@@ -4,7 +4,7 @@ const protoLoader = require('@grpc/proto-loader')
 
 let serverInstance
 
-export function start() {
+function start() {
   const definition = protoLoader.loadSync(
     `${app.getPath('home')}/project/me/exp-node-grpc/proto/greeter.proto`,
     {
@@ -33,6 +33,11 @@ export function start() {
   })
 }
 
-export function stop() {
+function stop() {
   serverInstance.forceShutdown()
+}
+
+module.exports = {
+  start,
+  stop
 }

@@ -1,42 +1,52 @@
 <template>
   <div class="g-sidebar">
+    <div>
+      <button @click="handleChooseProtoFile">
+        <FontAwesomeIcon icon="plus" size="lg" />
+        Import Proto
+      </button>
+    </div>
     <GNavbarList>
-      <GNavbarListItem prefix-icon="P">
+      <GNavbarListItem
+        v-for="proto in protos"
+        :key="proto.proto"
+        prefix-icon="P"
+      >
         <template #after>
           <GNavbarList class="second">
-            <GNavbarListItem prefix-icon="S">
+            <GNavbarListItem
+              v-for="service in proto.services"
+              :key="service.service"
+              prefix-icon="S"
+            >
               <template #after>
                 <GNavbarList class="third">
-                  <GNavbarListItem prefix-icon="M">
-                    SayHello
-                  </GNavbarListItem>
-                  <GNavbarListItem prefix-icon="M">
-                    SayHi
-                  </GNavbarListItem>
-                  <GNavbarListItem prefix-icon="M">
-                    SayGoodbye
+                  <GNavbarListItem
+                    v-for="method in service.methods"
+                    :key="method.method"
+                    prefix-icon="M"
+                  >
+                    {{ method.method }}
                   </GNavbarListItem>
                 </GNavbarList>
               </template>
 
-              Greeter
-            </GNavbarListItem>
-            <GNavbarListItem prefix-icon="S">
-              Responder
+              {{ service.service }}
             </GNavbarListItem>
           </GNavbarList>
         </template>
 
-        greeter.proto
-      </GNavbarListItem>
-      <GNavbarListItem prefix-icon="P">
-        user.proto
+        {{ proto.proto }}
       </GNavbarListItem>
     </GNavbarList>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+import { ipcRenderer } from 'electron'
+import { CHOOSE_SINGLE_FILE } from '../../constants/ipcEvents'
 import GNavbarList from './GNavbarList.vue'
 import GNavbarListItem from './GNavbarListItem.vue'
 
@@ -46,6 +56,23 @@ export default {
   components: {
     GNavbarList,
     GNavbarListItem
+  },
+
+  setup() {
+    const store = useStore()
+
+    const protos = computed(() => store.getters['protoParser/protos'])
+
+    const handleChooseProtoFile = async () => {
+      const path = await ipcRenderer.invoke(CHOOSE_SINGLE_FILE)
+
+      await store.dispatch('protoParser/parseProtoFile', { path })
+    }
+
+    return {
+      protos,
+      handleChooseProtoFile
+    }
   }
 }
 </script>
