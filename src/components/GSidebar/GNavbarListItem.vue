@@ -82,7 +82,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px;
+  padding: 10px;
   color: $font-secondary;
 
   &:hover{
@@ -93,6 +93,10 @@ export default {
 }
 
 .g-navbar-list.second .g-navbar-list-item > .g-navbar-list-item-container {
-  padding: 10px 15px 10px 30px;
+  padding-left: 25px;
+}
+
+.g-navbar-list.third .g-navbar-list-item > .g-navbar-list-item-container {
+  padding-left: 40px;
 }
 </style>

@@ -5,6 +5,20 @@
         <template #after>
           <GNavbarList class="second">
             <GNavbarListItem prefix-icon="S">
+              <template #after>
+                <GNavbarList class="third">
+                  <GNavbarListItem prefix-icon="M">
+                    SayHello
+                  </GNavbarListItem>
+                  <GNavbarListItem prefix-icon="M">
+                    SayHi
+                  </GNavbarListItem>
+                  <GNavbarListItem prefix-icon="M">
+                    SayGoodbye
+                  </GNavbarListItem>
+                </GNavbarList>
+              </template>
+
               Greeter
             </GNavbarListItem>
             <GNavbarListItem prefix-icon="S">
