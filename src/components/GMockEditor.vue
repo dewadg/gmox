@@ -73,6 +73,7 @@ export default {
     display: flex;
     align-items: center;
     padding: 15px;
+    color: $font-secondary;
     border-bottom: 1px solid $accent;
 
     .g-alphabet-icon {
