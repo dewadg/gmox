@@ -23,7 +23,7 @@
   border-bottom: 1px solid $accent;
 
   .input-port {
-    background: $tertiary;
+    background: $secondary;
     height: 35px;
     border: none;
     border-radius: 5px;
