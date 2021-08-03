@@ -1,10 +1,10 @@
 <template>
   <div class="g-sidebar">
-    <div>
-      <button @click="handleChooseProtoFile">
-        <FontAwesomeIcon icon="plus" size="lg" />
+    <div class="g-sidebar-control">
+      <GButton @click="handleChooseProtoFile">
+        <FontAwesomeIcon icon="plus" size="xs" />
         Import Proto
-      </button>
+      </GButton>
     </div>
     <GNavbarList>
       <GNavbarListItem
@@ -49,13 +49,15 @@ import { ipcRenderer } from 'electron'
 import { CHOOSE_SINGLE_FILE } from '../../constants/ipcEvents'
 import GNavbarList from './GNavbarList.vue'
 import GNavbarListItem from './GNavbarListItem.vue'
+import GButton from '../GButton.vue'
 
 export default {
   name: 'GSidebar',
 
   components: {
     GNavbarList,
-    GNavbarListItem
+    GNavbarListItem,
+    GButton
   },
 
   setup() {
@@ -87,5 +89,9 @@ export default {
   width: 250px;
   height: 100%;
   border-right: 1px solid $accent;
+
+  .g-sidebar-control {
+    padding: 10px;
+  }
 }
 </style>
