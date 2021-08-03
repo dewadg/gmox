@@ -1,0 +1,98 @@
+<template>
+  <li class="g-navbar-list-item">
+    <div
+      class="g-navbar-list-item-container"
+      @click="toggle"
+    >
+      <div class="g-navbar-list-item-title">
+        <GAlphabetIcon>
+          {{ prefixIcon }}
+        </GAlphabetIcon>
+        <slot />
+      </div>
+      <FontAwesomeIcon
+        v-if="hasAfter && !isToggled"
+        icon="chevron-down"
+        size="xs"
+      />
+      <FontAwesomeIcon
+        v-if="hasAfter && isToggled"
+        icon="chevron-up"
+        size="xs"
+      />
+    </div>
+    <slot
+      v-if="isToggled"
+      name="after"
+    />
+  </li>
+</template>
+
+<script>
+import { ref, computed } from 'vue'
+import GAlphabetIcon from '../GAlphabetIcon.vue'
+
+export default {
+  components: {
+    GAlphabetIcon
+  },
+
+  props: {
+    prefixIcon: {
+      type: String,
+      required: true
+    }
+  },
+
+  setup(props, { slots }) {
+    const isToggled = ref(false)
+
+    const hasAfter = computed(() => Boolean(slots.after))
+
+    const toggle = () => {
+      isToggled.value = !isToggled.value
+    }
+
+    return {
+      isToggled,
+      hasAfter,
+      toggle
+    }
+  }
+}
+</script>
+
+<style lang="scss">
+@import '../../assets/styles/variables.scss';
+
+.g-navbar-list-item {
+  font-size: 0.9em;
+
+  .g-navbar-list-item-title {
+    display: flex;
+    align-items: center;
+
+    .g-alphabet-icon {
+      margin-right: 10px;
+    }
+  }
+}
+
+.g-navbar-list-item-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  color: $font-secondary;
+
+  &:hover{
+    background: $secondary;
+    color: $font-primary;
+    cursor: pointer;
+  }
+}
+
+.g-navbar-list.second .g-navbar-list-item > .g-navbar-list-item-container {
+  padding: 10px 15px 10px 30px;
+}
+</style>
