@@ -13,7 +13,8 @@ function handleParseProtoFile() {
 
           const methods = Object.keys(proto[key][item].service).map(method => ({
             method,
-            path: proto[key][item].service[method].path
+            path: proto[key][item].service[method].path,
+            originalName: proto[key][item].service[method].originalName
           }))
 
           services.push({
