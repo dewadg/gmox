@@ -6,14 +6,14 @@ let serverInstance
 function start({
   address = '127.0.0.1:50051',
   protos = [],
-  mocks = new Map()
+  stubs = new Map()
 }) {
   return new Promise((resolve, reject) => {
     Promise.all(protos.map(proto => loadProtoFile(proto.filePath)))
       .then((loadedProtos) => {
         serverInstance = new grpc.Server()
 
-        mountMocksToServer(serverInstance, loadedProtos, mocks)
+        mountStubsToServer(serverInstance, loadedProtos, stubs)
 
         serverInstance.bindAsync(
           address,
@@ -33,7 +33,7 @@ function stop() {
   serverInstance.forceShutdown()
 }
 
-function mountMocksToServer(server, protos, mocks) {
+function mountStubsToServer(server, protos, stubs) {
   for (const proto of protos) {
     for (const packageName of Object.keys(proto)) {
       let serviceName = ''
@@ -49,12 +49,12 @@ function mountMocksToServer(server, protos, mocks) {
 
       // generate mocked implementation
       const implementation = Object.values(Object.values(service).pop())
-        .filter(method => mocks.has(method.path))
+        .filter(method => stubs.has(method.path))
         .reduce((carry, method) => {
           carry[method.originalName] = (call, callback) => {
-            const mock = JSON.parse(mocks.get(method.path).split('\n').join(''))
+            const stub = JSON.parse(stubs.get(method.path).split('\n').join(''))
 
-            callback(null, mock)
+            callback(null, stub)
           }
 
           return carry

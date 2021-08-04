@@ -43,7 +43,7 @@ export default {
     const currentServerState = computed(() => store.getters['grpcServer/currentState'])
 
     const handleTurnOnServer = () => {
-      const mocks = new Map(Object.entries({ ...store.getters['protoStub/getStubMap'] }))
+      const stubs = new Map(Object.entries({ ...store.getters['protoStub/getStubMap'] }))
 
       const protos = store.getters['protoParser/protos'].map(proto => ({
         ...proto,
@@ -58,7 +58,7 @@ export default {
       return store.dispatch('grpcServer/turnOn', {
         address: address.value,
         protos,
-        mocks
+        stubs
       })
     }
 

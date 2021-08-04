@@ -24,24 +24,24 @@ export default {
 
     const store = useStore()
 
-    const currentMockKey = computed(() => store.getters['protoStub/getCurrentKey'])
+    const currentStubKey = computed(() => store.getters['protoStub/getCurrentKey'])
 
-    const title = computed(() => currentMockKey.value
-      ? currentMockKey.value
+    const title = computed(() => currentStubKey.value
+      ? currentStubKey.value
       : 'No service method currently opened. You can import proto in left sidebar'
     )
 
-    const methodChosen = computed(() => Boolean(currentMockKey.value))
+    const methodChosen = computed(() => Boolean(currentStubKey.value))
 
     const handleEditorContentChange = () => {
       store.commit('protoStub/setStub', {
-        key: currentMockKey.value,
+        key: currentStubKey.value,
         value: editor.getModel().getValue()
       })
     }
 
-    // reload current key's mock during key switch
-    watch(currentMockKey, (nextKey) => {
+    // reload current key's stub during key switch
+    watch(currentStubKey, (nextKey) => {
       if (!nextKey) return
 
       if (editor) {

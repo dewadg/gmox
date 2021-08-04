@@ -4,12 +4,12 @@ function handleTurnOnGrpcServer() {
   return async (_, {
     address,
     protos,
-    mocks
+    stubs
   }) => {
     await start({
       address,
       protos,
-      mocks
+      stubs
     })
   }
 }
