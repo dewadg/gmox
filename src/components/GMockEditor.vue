@@ -40,7 +40,7 @@ export default {
       })
     }
 
-    // save to store when switching methods
+    // reload current key's mock during key switch
     watch(currentMockKey, (nextKey) => {
       if (!nextKey) return
 
