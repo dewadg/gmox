@@ -9,7 +9,8 @@
 </template>
 
 <script>
-import { onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
+import { useStore } from 'vuex'
 import * as monaco from 'monaco-editor'
 import GAlphabetIcon from './GAlphabetIcon.vue'
 
@@ -19,8 +20,37 @@ export default {
   },
 
   setup() {
+    let editor = null
+
+    const store = useStore()
+
+    const currentMockKey = computed(() => store.getters['protoMock/currentKey'])
+
+    const title = computed(() => currentMockKey.value
+      ? currentMockKey.value
+      : 'No service method currently opened. You can import proto in left sidebar'
+    )
+
+    const methodChosen = computed(() => Boolean(currentMockKey.value))
+
+    const handleEditorContentChange = () => {
+      store.commit('protoMock/setMock', {
+        key: currentMockKey.value,
+        value: editor.getModel().getValue()
+      })
+    }
+
+    // save to store when switching methods
+    watch(currentMockKey, (nextKey) => {
+      if (!nextKey) return
+
+      if (editor) {
+        editor.getModel().setValue(store.getters['protoMock/mockByKey'](nextKey) || '')
+      }
+    })
+
     onMounted(() => {
-      monaco.editor.create(document.getElementById('editor'), {
+      editor = monaco.editor.create(document.getElementById('editor'), {
         value: [
           '{',
           '\t"hello": "world",',
@@ -41,10 +71,9 @@ export default {
         fontFamily: 'monospace',
         fontSize: '15px'
       })
-    })
 
-    const title = 'No service method currently opened. You can import proto in left sidebar'
-    const methodChosen = true
+      editor.getModel().onDidChangeContent(handleEditorContentChange)
+    })
 
     return {
       title,

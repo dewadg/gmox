@@ -25,6 +25,7 @@
                     v-for="method in service.methods"
                     :key="method.method"
                     prefix-icon="M"
+                    @click="handleEdit({ proto: proto.proto, service: service.service, method: method.method })"
                   >
                     {{ method.method }}
                   </GNavbarListItem>
@@ -71,9 +72,14 @@ export default {
       await store.dispatch('protoParser/parseProtoFile', { path })
     }
 
+    const handleEdit = ({ proto, service, method }) => {
+      store.commit('protoMock/setCurrentKey', `${proto}.${service}.${method}`)
+    }
+
     return {
       protos,
-      handleChooseProtoFile
+      handleChooseProtoFile,
+      handleEdit
     }
   }
 }
