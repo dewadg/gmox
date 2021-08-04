@@ -1,3 +1,5 @@
+import { TURN_OFF_GRPC_SERVER, TURN_ON_GRPC_SERVER } from '../constants/ipcEvents'
+
 export const GRPC_SERVER_STATE = {
   ON: 'ON',
   OFF: 'OFF'
@@ -13,7 +15,6 @@ const getters = {
 
 const mutations = {
   turnOn(state) {
-    console.log('Whee')
     state.currentState = GRPC_SERVER_STATE.ON
   },
 
@@ -23,14 +24,17 @@ const mutations = {
 }
 
 const actions = ({ ipcRenderer }) => ({
-  async turnOn({ commit }) {
-    ipcRenderer.invoke('GRPC_SERVER_CHANNEL', 'turnOn')
+  async turnOn({ commit }, { protos, mocks }) {
+    ipcRenderer.invoke(TURN_ON_GRPC_SERVER, {
+      protos,
+      mocks
+    })
 
     commit('turnOn')
   },
 
   async turnOff({ commit }) {
-    ipcRenderer.invoke('GRPC_SERVER_CHANNEL', 'turnOff')
+    ipcRenderer.invoke(TURN_OFF_GRPC_SERVER)
 
     commit('turnOff')
   }

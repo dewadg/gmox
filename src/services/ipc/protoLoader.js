@@ -1,8 +1,8 @@
 const { loadProtoFile } = require('../grpc/protoLoader')
 
 function handleParseProtoFile() {
-  return (_, { path }) => {
-    const proto = loadProtoFile(path)
+  return async (_, { path }) => {
+    const proto = await loadProtoFile(path)
 
     return Object.keys(proto)
       .map((key) => {

@@ -9,8 +9,8 @@ const PROTO_LOAD_OPTIONS = {
   oneofs: true
 }
 
-function loadProtoFile(path) {
-  const definition = protoLoader.loadSync(path, PROTO_LOAD_OPTIONS)
+async function loadProtoFile(path) {
+  const definition = await protoLoader.load(path, PROTO_LOAD_OPTIONS)
   const proto = grpc.loadPackageDefinition(definition)
 
   return proto
