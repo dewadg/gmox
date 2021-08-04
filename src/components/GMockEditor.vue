@@ -51,13 +51,7 @@ export default {
 
     onMounted(() => {
       editor = monaco.editor.create(document.getElementById('editor'), {
-        value: [
-          '{',
-          '\t"hello": "world",',
-          '\t"damn": "it",',
-          '\t"it": "works"',
-          '}'
-        ].join('\n'),
+        value: '',
         language: 'json',
         theme: 'vs-dark',
         minimap: {
