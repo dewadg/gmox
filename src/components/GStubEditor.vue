@@ -1,6 +1,6 @@
 <template>
-  <div class="g-mock-editor">
-    <div class="g-mock-editor-title">
+  <div class="g-stub-editor">
+    <div class="g-stub-editor-title">
       <GAlphabetIcon v-if="methodChosen">M</GAlphabetIcon>
       <span>{{ title }}</span>
     </div>
@@ -24,7 +24,7 @@ export default {
 
     const store = useStore()
 
-    const currentMockKey = computed(() => store.getters['protoMock/currentKey'])
+    const currentMockKey = computed(() => store.getters['protoStub/getCurrentKey'])
 
     const title = computed(() => currentMockKey.value
       ? currentMockKey.value
@@ -34,7 +34,7 @@ export default {
     const methodChosen = computed(() => Boolean(currentMockKey.value))
 
     const handleEditorContentChange = () => {
-      store.commit('protoMock/setMock', {
+      store.commit('protoStub/setStub', {
         key: currentMockKey.value,
         value: editor.getModel().getValue()
       })
@@ -45,7 +45,7 @@ export default {
       if (!nextKey) return
 
       if (editor) {
-        editor.getModel().setValue(store.getters['protoMock/mockByKey'](nextKey) || '')
+        editor.getModel().setValue(store.getters['protoStub/findByKey'](nextKey) || '')
       }
     })
 
@@ -86,7 +86,7 @@ export default {
   height: 100%;
 }
 
-.g-mock-editor {
+.g-stub-editor {
   position: fixed;
   top: 76px;
   left: 251px;
@@ -94,7 +94,7 @@ export default {
   height: calc(100% - 76px);
   border-right: 1px solid $accent;
 
-  .g-mock-editor-title {
+  .g-stub-editor-title {
     display: flex;
     align-items: center;
     padding: 15px;

@@ -2,7 +2,7 @@
   <div class="home">
     <GNavbar />
     <GSidebar />
-    <GMockEditor />
+    <GStubEditor />
     <GRequestLog />
   </div>
 </template>
@@ -10,7 +10,7 @@
 <script>
 import GNavbar from '@/components/GNavbar'
 import GSidebar from '@/components/GSidebar'
-import GMockEditor from '@/components/GMockEditor'
+import GStubEditor from '@/components/GStubEditor'
 import GRequestLog from '@/components/GRequestLog'
 
 export default {
@@ -19,7 +19,7 @@ export default {
   components: {
     GNavbar,
     GSidebar,
-    GMockEditor,
+    GStubEditor,
     GRequestLog
   }
 }

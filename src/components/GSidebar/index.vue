@@ -73,7 +73,7 @@ export default {
     }
 
     const handleEdit = ({ proto, service, method }) => {
-      store.commit('protoMock/setCurrentKey', `/${proto}.${service}/${method}`)
+      store.commit('protoStub/setCurrentKey', `/${proto}.${service}/${method}`)
     }
 
     return {

@@ -5,11 +5,11 @@ const state = {
 }
 
 const getters = {
-  allMocks: state => Object.fromEntries(state.data),
+  getStubMap: state => Object.fromEntries(state.data),
 
-  currentKey: state => state.currentKey,
+  getCurrentKey: state => state.currentKey,
 
-  mockByKey: state => key => state.data.get(key)
+  findByKey: state => key => state.data.get(key)
 }
 
 const mutations = {
@@ -17,7 +17,7 @@ const mutations = {
     state.currentKey = key
   },
 
-  setMock(state, { key, value }) {
+  setStub(state, { key, value }) {
     state.data.set(key, value)
   }
 }

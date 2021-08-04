@@ -43,7 +43,7 @@ export default {
     const currentServerState = computed(() => store.getters['grpcServer/currentState'])
 
     const handleTurnOnServer = () => {
-      const mocks = new Map(Object.entries({ ...store.getters['protoMock/allMocks'] }))
+      const mocks = new Map(Object.entries({ ...store.getters['protoStub/getStubMap'] }))
 
       const protos = store.getters['protoParser/protos'].map(proto => ({
         ...proto,
