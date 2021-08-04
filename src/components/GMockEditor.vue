@@ -69,7 +69,8 @@ export default {
         },
         scrollBeyondLastLine: false,
         fontFamily: 'monospace',
-        fontSize: '15px'
+        fontSize: '15px',
+        automaticLayout: true
       })
 
       editor.getModel().onDidChangeContent(handleEditorContentChange)
@@ -87,6 +88,7 @@ export default {
 @import '../assets/styles/variables.scss';
 
 #editor {
+  width: 100%;
   height: 100%;
 }
 
