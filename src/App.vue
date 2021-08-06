@@ -12,10 +12,33 @@ export default {
   setup() {
     const store = useStore()
 
+    const restoreStores = () => {
+      const mutations = Object.keys(store._mutations)
+
+      for (const mutation of mutations) {
+        if (!mutation.endsWith('/restore')) continue
+
+        store.commit(mutation)
+      }
+    }
+
+    const backupStores = () => {
+      const mutations = Object.keys(store._mutations).filter(item => item.endsWith('/backup'))
+
+      setInterval(() => {
+        mutations.forEach((mutation) => {
+          store.commit(mutation)
+        })
+      }, 5000)
+    }
+
     onMounted(() => {
       ipcRenderer.on(INCOMING_REQUEST, (_, args) => {
         store.commit('requestLog/log', args)
       })
+
+      restoreStores()
+      backupStores()
     })
   }
 }

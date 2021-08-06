@@ -1,4 +1,7 @@
+import { backup, restore } from '../services/storage/localStorage'
 import { PARSE_PROTO_FILE } from '../constants/ipcEvents'
+
+const BACKUP_KEY = '__state_protoParser'
 
 const state = {
   isLoading: false,
@@ -20,6 +23,19 @@ const mutations = {
       ...protos,
       ...state.protos
     ]
+  },
+
+  backup(state) {
+    backup(BACKUP_KEY, {
+      protos: state.protos.map(proto => ({ ...proto }))
+    })
+  },
+
+  restore(state) {
+    const data = restore(BACKUP_KEY)
+    if (!data) return
+
+    state.protos = data.protos
   }
 }
 

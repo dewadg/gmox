@@ -1,3 +1,7 @@
+import { backup, restore } from '../services/storage/localStorage'
+
+const BACKUP_KEY = '__state_protoStub'
+
 const state = {
   data: new Map(),
 
@@ -19,6 +23,19 @@ const mutations = {
 
   setStub(state, { key, value }) {
     state.data.set(key, value)
+  },
+
+  backup(state) {
+    backup(BACKUP_KEY, {
+      data: Object.fromEntries(state.data)
+    })
+  },
+
+  restore(state) {
+    const data = restore(BACKUP_KEY)
+    if (!data) return
+
+    state.data = new Map(Object.entries(data.data))
   }
 }
 
