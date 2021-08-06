@@ -13,7 +13,15 @@
           {{ log.timestamp }}
         </template>
 
-        {{ log.type.toUpperCase() }}
+        <template #payload>
+          <pre>{{ log.payload }}</pre>
+        </template>
+
+        <template #metadata>
+          <pre>{{ log.metadata }}</pre>
+        </template>
+
+        {{ log.type }}
       </GRequestLogListItem>
     </GRequestLogList>
   </div>
@@ -22,6 +30,7 @@
 <script>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
+import day from 'dayjs'
 import GAlphabetIcon from '../GAlphabetIcon.vue'
 import GRequestLogList from './GRequestLogList.vue'
 import GRequestLogListItem from './GRequestLogListItem.vue'
@@ -40,7 +49,14 @@ export default {
 
     const currentPath = computed(() => store.getters['protoStub/getCurrentPath'])
 
-    const logs = computed(() => store.getters['requestLog/getByPath'](currentPath.value))
+    const logs = computed(() => {
+      return store.getters['requestLog/getByPath'](currentPath.value).map(log => ({
+        type: log.type.toUpperCase(),
+        payload: JSON.stringify(log.payload, null, 2),
+        metadata: JSON.stringify(log.metadata.headers, null, 2),
+        timestamp: day(log.timestamp).format('YYYY-MM-DD HH:mm:ss')
+      }))
+    })
 
     return {
       title: 'Incoming request logs will be displayed below',

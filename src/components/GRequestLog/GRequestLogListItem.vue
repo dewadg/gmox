@@ -1,8 +1,11 @@
 <template>
   <li class="g-request-log-list-item">
-    <GAlphabetIcon>R</GAlphabetIcon>
-    <div class="g-request-log-list-item-container">
+    <div
+      class="g-request-log-list-item-container"
+      @click="toggleDetails"
+    >
       <div class="left-slot">
+        <GAlphabetIcon>R</GAlphabetIcon>
         <slot />
       </div>
       <div class="right-slot">
@@ -10,15 +13,43 @@
         <slot name="actions" />
       </div>
     </div>
+    <div
+      v-if="detailsShown"
+      class="g-request-log-list-item-details"
+    >
+      <div class="payload">
+        Payload
+        <slot name="payload" />
+      </div>
+
+      <div class="metadata">
+        Metadata
+        <slot name="metadata" />
+      </div>
+    </div>
   </li>
 </template>
 
 <script>
+import { ref } from 'vue'
 import GAlphabetIcon from '../GAlphabetIcon.vue'
 
 export default {
   components: {
     GAlphabetIcon
+  },
+
+  setup() {
+    const detailsShown = ref(false)
+
+    const toggleDetails = () => {
+      detailsShown.value = !detailsShown.value
+    }
+
+    return {
+      detailsShown,
+      toggleDetails
+    }
   }
 }
 </script>
@@ -27,15 +58,11 @@ export default {
 @import '../../assets/styles/variables.scss';
 
 .g-request-log-list-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 15px;
   border-bottom: 1px solid $accent;
   color: $font-secondary;
 
   &:hover {
     background: $secondary;
-    cursor: pointer;
   }
 
   .g-alphabet-icon {
@@ -43,9 +70,14 @@ export default {
   }
 
   .g-request-log-list-item-container {
+    padding: 10px 15px;
     display: flex;
     flex-grow: 1;
     justify-content: space-between;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   .left-slot,
@@ -56,6 +88,21 @@ export default {
 
   .g-button {
     margin-left: 10px;
+  }
+
+  .g-request-log-list-item-details {
+    padding: 10px 15px;
+    margin-top: 20px;
+
+    .payload {
+      margin-bottom: 20px;
+    }
+
+    pre {
+      overflow: auto;
+      word-wrap: normal;
+      white-space: pre;
+    }
   }
 }
 </style>
