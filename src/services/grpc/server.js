@@ -37,6 +37,8 @@ function start({
 }
 
 function stop() {
+  if (!serverInstance) return
+
   serverInstance.forceShutdown()
 }
 
