@@ -1,5 +1,4 @@
 const grpc = require('@grpc/grpc-js')
-const { ipcMain } = require('electron')
 const { INCOMING_REQUEST } = require('../../constants/ipcEvents')
 const { loadProtoFile } = require('./protoLoader')
 
