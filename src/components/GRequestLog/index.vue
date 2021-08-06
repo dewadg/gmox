@@ -38,7 +38,7 @@ export default {
   setup() {
     const store = useStore()
 
-    const currentPath = computed(() => store.getters['protoStub/getCurrentKey'])
+    const currentPath = computed(() => store.getters['protoStub/getCurrentPath'])
 
     const logs = computed(() => store.getters['requestLog/getByPath'](currentPath.value))
 

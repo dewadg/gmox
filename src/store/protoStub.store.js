@@ -1,20 +1,20 @@
 const state = {
   data: new Map(),
 
-  currentKey: ''
+  currentPath: ''
 }
 
 const getters = {
   getStubMap: state => Object.fromEntries(state.data),
 
-  getCurrentKey: state => state.currentKey,
+  getCurrentPath: state => state.currentPath,
 
-  findByKey: state => key => state.data.get(key)
+  findByPath: state => path => state.data.get(path)
 }
 
 const mutations = {
-  setCurrentKey(state, key) {
-    state.currentKey = key
+  setCurrentPath(state, path) {
+    state.currentPath = path
   },
 
   setStub(state, { key, value }) {
