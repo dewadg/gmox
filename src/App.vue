@@ -2,6 +2,25 @@
   <router-view/>
 </template>
 
+<script>
+import { onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { ipcRenderer } from 'electron'
+import { INCOMING_REQUEST } from './constants/ipcEvents'
+
+export default {
+  setup() {
+    const store = useStore()
+
+    onMounted(() => {
+      ipcRenderer.on(INCOMING_REQUEST, (_, args) => {
+        store.commit('requestLog/log', args)
+      })
+    })
+  }
+}
+</script>
+
 <style lang="scss">
 @import './assets/styles/variables.scss';
 

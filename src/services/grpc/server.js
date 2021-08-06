@@ -1,9 +1,12 @@
 const grpc = require('@grpc/grpc-js')
+const { ipcMain } = require('electron')
+const { INCOMING_REQUEST } = require('../../constants/ipcEvents')
 const { loadProtoFile } = require('./protoLoader')
 
 let serverInstance
 
 function start({
+  win,
   address = '127.0.0.1:50051',
   protos = [],
   stubs = new Map()
@@ -13,7 +16,12 @@ function start({
       .then((loadedProtos) => {
         serverInstance = new grpc.Server()
 
-        mountStubsToServer(serverInstance, loadedProtos, stubs)
+        mountStubsToServer({
+          win,
+          server: serverInstance,
+          protos: loadedProtos,
+          stubs
+        })
 
         serverInstance.bindAsync(
           address,
@@ -33,7 +41,12 @@ function stop() {
   serverInstance.forceShutdown()
 }
 
-function mountStubsToServer(server, protos, stubs) {
+function mountStubsToServer({
+  win,
+  server,
+  protos,
+  stubs
+}) {
   for (const proto of protos) {
     for (const packageName of Object.keys(proto)) {
       let serviceName = ''
@@ -55,6 +68,19 @@ function mountStubsToServer(server, protos, stubs) {
             const stub = JSON.parse(stubs.get(method.path).split('\n').join(''))
 
             callback(null, stub)
+
+            const request = {
+              path: call.call.handler.path,
+              type: call.call.handler.type,
+              payload: call.request,
+              metadata: {
+                headers: Object.fromEntries(call.metadata.internalRepr),
+                options: call.metadata.options
+              },
+              timestamp: new Date()
+            }
+
+            win.webContents.send(INCOMING_REQUEST, request)
           }
 
           return carry

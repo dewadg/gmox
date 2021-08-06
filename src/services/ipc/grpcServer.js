@@ -1,12 +1,13 @@
 const { start, stop } = require('../grpc/server')
 
-function handleTurnOnGrpcServer() {
+function handleTurnOnGrpcServer({ win }) {
   return async (_, {
     address,
     protos,
     stubs
   }) => {
     await start({
+      win,
       address,
       protos,
       stubs

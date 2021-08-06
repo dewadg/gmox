@@ -10,16 +10,18 @@
         :key="log"
       >
         <template #right>
-          2021-08-04 02:02:02
+          {{ log.timestamp }}
         </template>
 
-        0.0.0.0:8000
+        {{ log.type.toUpperCase() }}
       </GRequestLogListItem>
     </GRequestLogList>
   </div>
 </template>
 
 <script>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 import GAlphabetIcon from '../GAlphabetIcon.vue'
 import GRequestLogList from './GRequestLogList.vue'
 import GRequestLogListItem from './GRequestLogListItem.vue'
@@ -34,20 +36,15 @@ export default {
   },
 
   setup() {
+    const store = useStore()
+
+    const currentPath = computed(() => store.getters['protoStub/getCurrentKey'])
+
+    const logs = computed(() => store.getters['requestLog/getByPath'](currentPath.value))
+
     return {
       title: 'Incoming request logs will be displayed below',
-      logs: [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10
-      ]
+      logs
     }
   }
 }

@@ -45,13 +45,13 @@ async function createWindow() {
     win.loadURL('app://./index.html')
   }
 
-  registerIpcHandlers()
+  registerIpcHandlers({ win })
 }
 
-function registerIpcHandlers() {
+function registerIpcHandlers({ win }) {
   ipcMain.handle(CHOOSE_SINGLE_FILE, handleChooseSingleFile())
   ipcMain.handle(PARSE_PROTO_FILE, handleParseProtoFile())
-  ipcMain.handle(TURN_ON_GRPC_SERVER, handleTurnOnGrpcServer())
+  ipcMain.handle(TURN_ON_GRPC_SERVER, handleTurnOnGrpcServer({ win }))
   ipcMain.handle(TURN_OFF_GRPC_SERVER, handleTurnOffGrpcServer())
 }
 
