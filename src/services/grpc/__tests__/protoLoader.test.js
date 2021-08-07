@@ -1,7 +1,7 @@
 const {
   loadProtoFile,
   flattenProto,
-  buildStructure
+  buildTemplate
 } = require('../protoLoader')
 
 describe('flattenProto', () => {
@@ -63,7 +63,7 @@ describe('flattenProto', () => {
   })
 })
 
-describe('buildStructure', () => {
+describe('buildTemplate', () => {
   let proto = {}
 
   const testTables = [
@@ -171,7 +171,7 @@ describe('buildStructure', () => {
 
   testTables.forEach((tt) => {
     test(tt.name, () => {
-      const got = buildStructure(proto, tt.args.pkg, tt.args.definition)
+      const got = buildTemplate(proto, tt.args.pkg, tt.args.definition)
 
       expect(got).toEqual(tt.want)
     })

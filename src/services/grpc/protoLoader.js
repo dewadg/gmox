@@ -37,7 +37,7 @@ function flattenProto(proto) {
   return flatten
 }
 
-function buildStructure(proto, pkg, definition) {
+function buildTemplate(proto, pkg, definition) {
   const key = pkg.length ? `${pkg}.${definition}` : definition
 
   if (!proto[key]) return {}
@@ -54,8 +54,8 @@ function buildStructure(proto, pkg, definition) {
       case 'TYPE_MESSAGE':
         // eslint-disable-next-line
         const sub = proto[field.typeName]
-          ? buildStructure(proto, '', field.typeName)
-          : buildStructure(proto, pkg, field.typeName)
+          ? buildTemplate(proto, '', field.typeName)
+          : buildTemplate(proto, pkg, field.typeName)
 
         value = !isRepeated ? sub : [sub]
         break
@@ -106,8 +106,8 @@ async function parseProto(path) {
 
         if (typeof proto[pkg][item] === 'object') {
           types.set(item, {
-            name: item,
-            structure: buildStructure(flattennedProto, pkg, item)
+            name: `${pkg}.${item}`,
+            template: JSON.stringify(buildTemplate(flattennedProto, pkg, item), null, 2)
           })
         }
       }
@@ -124,6 +124,6 @@ async function parseProto(path) {
 module.exports = {
   loadProtoFile,
   flattenProto,
-  buildStructure,
+  buildTemplate,
   parseProto
 }
