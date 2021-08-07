@@ -45,6 +45,8 @@ const actions = ({ ipcRenderer }) => ({
 
     const protos = await ipcRenderer.invoke(PARSE_PROTO_FILE, { path })
 
+    console.log({ protos })
+
     commit('parseProtoDone', { protos })
   }
 })

@@ -1,0 +1,188 @@
+syntax = "proto3";
+
+option go_package = ".;pb";
+
+package pallet;
+
+import "google/protobuf/timestamp.proto";
+
+// Service declarations
+service PalletMovementService {
+  rpc GetPrepared(GetPreparedPalletMovementRequest) returns (GetPreparedPalletMovementResponse);
+
+  rpc GetByPONumber(GetByPONumberRequest) returns (GetByPONumberResponse);
+
+  rpc Assign(AssignPalletRequest) returns (AssignPalletResponse);
+
+  rpc Find(FindPalletMovementRequest) returns (FindPalletMovementResponse);
+
+  rpc MoveProduct(MoveProductToPalletRequest) returns (MoveProductToPalletResponse);
+
+  rpc MarkAsCompleted(MarkPalletAsCompletedRequest) returns (MarkPalletAsCompletedResponse);
+
+  rpc GetPreparedForReturn(GetPreparedPalletMovementForReturnRequest) returns (GetPreparedPalletMovementForReturnResponse);
+
+  rpc GetBySoNumber(GetBySoNumberRequest) returns (GetBySoNumberResponse);
+
+  rpc MoveProductForReturn(MoveProductForReturnToPalletRequest) returns (MoveProductForReturnToPalletResponse);
+
+  rpc GetByCourier(GetByCourierRequest) returns (GetByCourierResponse);
+}
+
+// Type declarations
+message PalletMovement {
+  string pallet_id = 1;
+  string status = 2;
+  string occupied_by = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+  uint32 id = 6;
+  repeated PalletMovementItem items = 7;
+  repeated PalletMovementSoItem so_items = 8;
+}
+
+message PalletMovementItem {
+  uint32 po_id = 1;
+  string po_number = 2;
+  uint32 product_id = 3;
+  string product_sku = 4;
+  string product_name = 5;
+  float qty = 6;
+  uint32 uom_id = 7;
+  string uom_name = 8;
+  float uom_factor = 9;
+  uint32 po_item_id = 10;
+  string barcode = 11;
+  bool is_backorder = 13;
+  bool is_editable = 12;
+  bool is_bonus = 14;
+}
+
+message PalletMovementSoItem {
+  uint32 so_id = 1;
+  string so_number = 2;
+  uint32 product_id = 3;
+  string product_sku = 4;
+  string product_name = 5;
+  float qty = 6;
+  uint32 uom_id = 7;
+  string uom_name = 8;
+  float uom_factor = 9;
+  uint32 so_item_id = 10;
+  string barcode = 11;
+  bool is_from_return_doc = 12;
+  bool is_found_on_doc = 13;
+  uint32 switched_with_product_id = 14;
+  string switched_with_product_sku = 15;
+}
+
+// Request declarations
+message GetPreparedPalletMovementRequest {}
+
+message GetByPONumberRequest {
+  string poNumber = 1;
+}
+
+message AssignPalletRequest {
+  string palletId = 1;
+  string used_for = 2;
+}
+
+message FindPalletMovementRequest {
+  string palletId = 1;
+}
+
+message MoveProductToPalletRequest {
+  string pallet_id = 1;
+  uint32 po_id = 2;
+  string po_number = 3;
+  uint32 product_id = 4;
+  string product_sku = 5;
+  string product_name = 6;
+  float qty = 7;
+  uint32 uom_id = 8;
+  string uom_name = 9;
+  float uom_factor = 10;
+  uint32 po_item_id = 11;
+  string barcode = 12;
+  bool is_backorder = 13;
+  bool is_bonus = 14;
+}
+
+message MarkPalletAsCompletedRequest {
+  string palletId = 1;
+}
+
+message GetPreparedPalletMovementForReturnRequest {}
+
+message GetBySoNumberRequest {
+  string soNumber = 1;
+}
+
+message MoveProductForReturnToPalletRequest {
+  string pallet_id = 1;
+  uint32 so_id = 2;
+  string so_number = 3;
+  uint32 product_id = 4;
+  string product_sku = 5;
+  string product_name = 6;
+  float qty = 7;
+  uint32 uom_id = 8;
+  string uom_name = 9;
+  float uom_factor = 10;
+  uint32 so_item_id = 11;
+  string barcode = 12;
+  bool is_backorder = 13;
+  bool is_from_return_doc = 14;
+  bool is_found_on_doc = 15;
+  uint32 courier_id = 16;
+  string courier_name = 17;
+  uint32 switched_with_product_id = 18;
+  string switched_with_product_sku = 19;
+}
+
+message GetByCourierRequest {
+  uint32 courier_id = 1;
+}
+
+// Response declarations
+message GetPreparedPalletMovementResponse {
+  repeated PalletMovement pallet_movements = 1;
+  int32 total_items = 2;
+}
+
+message GetByPONumberResponse {
+  repeated PalletMovement pallet_movements = 1;
+  int32 total_items = 2;
+}
+
+message AssignPalletResponse {
+  PalletMovement pallet_movement = 1;
+}
+
+message FindPalletMovementResponse {
+  PalletMovement pallet_movement = 1;
+}
+
+message MoveProductToPalletResponse {}
+
+message MarkPalletAsCompletedResponse {
+  repeated string internal_transfer_documents = 1;
+}
+
+message GetPreparedPalletMovementForReturnResponse {
+  repeated PalletMovement pallet_movements = 1;
+  int32 total_items = 2;
+}
+
+message GetBySoNumberResponse {
+  repeated PalletMovement pallet_movements = 1;
+  int32 total_items = 2;
+}
+
+message MoveProductForReturnToPalletResponse {}
+
+message GetByCourierResponse {
+  repeated PalletMovement pallet_movements = 1;
+  int32 total_items = 2;
+}
