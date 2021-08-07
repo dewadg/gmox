@@ -88,14 +88,15 @@ async function parseProto(path) {
     .filter(keys => keys !== 'google')
     .map((pkg) => {
       const services = []
-      const types = new Map()
+      const templates = new Map()
 
       for (const item of Object.keys(proto[pkg])) {
         if (typeof proto[pkg][item] === 'function') {
           const methods = Object.keys(proto[pkg][item].service).map(method => ({
             method,
             path: proto[pkg][item].service[method].path,
-            originalName: proto[pkg][item].service[method].originalName
+            originalName: proto[pkg][item].service[method].originalName,
+            returnType: proto[pkg][item].service[method].responseType.type.name
           }))
 
           services.push({
@@ -105,10 +106,7 @@ async function parseProto(path) {
         }
 
         if (typeof proto[pkg][item] === 'object') {
-          types.set(item, {
-            name: `${pkg}.${item}`,
-            template: JSON.stringify(buildTemplate(flattennedProto, pkg, item), null, 2)
-          })
+          templates.set(item, JSON.stringify(buildTemplate(flattennedProto, pkg, item), null, 2))
         }
       }
 
@@ -116,7 +114,7 @@ async function parseProto(path) {
         proto: pkg,
         filePath: path,
         services,
-        types
+        templates
       }
     })
 }

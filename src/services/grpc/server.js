@@ -61,6 +61,8 @@ function mountStubsToServer({
         break
       }
 
+      if (!service) continue
+
       // generate mocked implementation
       const implementation = Object.values(Object.values(service).pop())
         .filter(method => stubs.has(method.path))

@@ -24,28 +24,34 @@ export default {
 
     const store = useStore()
 
-    const currentStubPath = computed(() => store.getters['protoStub/getCurrentPath'])
+    const currentStubMethod = computed(() => store.getters['protoStub/getCurrentMethod'])
 
-    const title = computed(() => currentStubPath.value
-      ? currentStubPath.value
+    const title = computed(() => currentStubMethod.value.path
+      ? currentStubMethod.value.path
       : 'No service method currently opened. You can import proto in left sidebar'
     )
 
-    const methodChosen = computed(() => Boolean(currentStubPath.value))
+    const methodChosen = computed(() => Boolean(currentStubMethod.value.path))
 
     const handleEditorContentChange = () => {
       store.commit('protoStub/setStub', {
-        key: currentStubPath.value,
+        key: currentStubMethod.value.path,
         value: editor.getModel().getValue()
       })
     }
 
     // reload current key's stub during key switch
-    watch(currentStubPath, (nextPath) => {
-      if (!nextPath) return
+    watch(currentStubMethod.value, (nextStubMethod) => {
+      if (!nextStubMethod.path) return
 
       if (editor) {
-        editor.getModel().setValue(store.getters['protoStub/findByPath'](nextPath) || '')
+        let stub = store.getters['protoStub/findByPath'](nextStubMethod.path)
+
+        if (!stub) {
+          stub = store.getters['protoParser/findTemplate'](nextStubMethod.returnType)
+        }
+
+        editor.getModel().setValue(stub || '')
       }
     })
 
