@@ -85,6 +85,7 @@ async function parseProto(path) {
   const flattennedProto = flattenProto(proto)
 
   return Object.keys(proto)
+    .filter(keys => keys !== 'google')
     .map((pkg) => {
       const services = []
       const types = new Map()
