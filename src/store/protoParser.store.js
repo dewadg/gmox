@@ -30,7 +30,8 @@ const mutations = {
 
   backup(state) {
     backup(BACKUP_KEY, {
-      protos: state.protos.map(proto => ({ ...proto }))
+      protos: state.protos.map(proto => ({ ...proto })),
+      templates: Object.fromEntries(state.templates)
     })
   },
 
@@ -39,6 +40,7 @@ const mutations = {
     if (!data) return
 
     state.protos = data.protos
+    state.templates = new Map(Object.entries(data.templates))
   },
 
   mergeTemplates(state, { templates }) {
