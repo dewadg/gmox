@@ -1,5 +1,8 @@
-const { loadProtoFile } = require('../../grpc/protoLoader')
-const { buildStructure, flattenProto } = require('../protoLoader')
+const {
+  loadProtoFile,
+  flattenProto,
+  buildStructure
+} = require('../protoLoader')
 
 describe('flattenProto', () => {
   const testTables = [
@@ -64,35 +67,43 @@ describe('buildStructure', () => {
   let proto = {}
 
   const testTables = [
-    // {
-    //   name: 'GetByPONumberRequest',
-    //   want: {
-    //     poNumber: ''
-    //   }
-    // },
-    // {
-    //   name: 'MoveProductToPalletRequest',
-    //   want: {
-    //     pallet_id: '',
-    //     po_id: 0,
-    //     po_number: '',
-    //     product_id: 0,
-    //     product_sku: '',
-    //     product_name: '',
-    //     qty: 0.0,
-    //     uom_id: 0,
-    //     uom_name: '',
-    //     uom_factor: 0.0,
-    //     po_item_id: 0,
-    //     barcode: '',
-    //     is_backorder: false,
-    //     is_bonus: false
-    //   }
-    // },
+    {
+      name: 'GetByPONumberRequest',
+      args: {
+        pkg: 'pallet',
+        definition: 'GetByPONumberRequest'
+      },
+      want: {
+        poNumber: ''
+      }
+    },
+    {
+      name: 'MoveProductToPalletRequest',
+      args: {
+        pkg: 'pallet',
+        definition: 'MoveProductToPalletRequest'
+      },
+      want: {
+        pallet_id: '',
+        po_id: 0,
+        po_number: '',
+        product_id: 0,
+        product_sku: '',
+        product_name: '',
+        qty: 0.0,
+        uom_id: 0,
+        uom_name: '',
+        uom_factor: 0.0,
+        po_item_id: 0,
+        barcode: '',
+        is_backorder: false,
+        is_bonus: false
+      }
+    },
     {
       name: 'pallet.GetByCourierResponse',
       args: {
-        package: 'pallet',
+        pkg: 'pallet',
         definition: 'GetByCourierResponse'
       },
       want: {
@@ -160,7 +171,7 @@ describe('buildStructure', () => {
 
   testTables.forEach((tt) => {
     test(tt.name, () => {
-      const got = buildStructure(proto, tt.args.package, tt.args.definition)
+      const got = buildStructure(proto, tt.args.pkg, tt.args.definition)
 
       expect(got).toEqual(tt.want)
     })
