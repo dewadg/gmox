@@ -6,12 +6,16 @@ function handleTurnOnGrpcServer({ win }) {
     protos,
     stubs
   }) => {
-    await start({
-      win,
-      address,
-      protos,
-      stubs
-    })
+    try {
+      await start({
+        win,
+        address,
+        protos,
+        stubs
+      })
+    } catch (error) {
+      console.error('Error while starting gRPC server', error)
+    }
   }
 }
 
