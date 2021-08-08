@@ -1,7 +1,6 @@
 <template>
   <div class="g-request-logs">
     <div class="g-request-logs-title">
-      <GAlphabetIcon>L</GAlphabetIcon>
       <span>{{ title }}</span>
     </div>
     <GRequestLogList>
@@ -31,7 +30,6 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import day from 'dayjs'
-import GAlphabetIcon from '../GAlphabetIcon.vue'
 import GRequestLogList from './GRequestLogList.vue'
 import GRequestLogListItem from './GRequestLogListItem.vue'
 
@@ -39,7 +37,6 @@ export default {
   name: 'GRequestLog',
 
   components: {
-    GAlphabetIcon,
     GRequestLogList,
     GRequestLogListItem
   },
@@ -47,10 +44,10 @@ export default {
   setup() {
     const store = useStore()
 
-    const currentMethod = computed(() => store.getters['protoStub/getCurrentMethod'])
+    const currentStubMethod = computed(() => store.getters['protoStub/getCurrentMethod'])
 
     const logs = computed(() => {
-      return store.getters['requestLog/getByPath'](currentMethod.value.path).map(log => ({
+      return store.getters['requestLog/getByPath'](currentStubMethod.value.path).map(log => ({
         type: log.type.toUpperCase(),
         payload: JSON.stringify(log.payload, null, 2),
         metadata: JSON.stringify(log.metadata.headers, null, 2),
@@ -59,7 +56,7 @@ export default {
     })
 
     return {
-      title: 'Incoming request logs will be displayed below',
+      title: 'Request Logs',
       logs
     }
   }

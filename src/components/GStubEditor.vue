@@ -1,7 +1,6 @@
 <template>
   <div class="g-stub-editor">
     <div class="g-stub-editor-title">
-      <GAlphabetIcon v-if="methodChosen">M</GAlphabetIcon>
       <span>{{ title }}</span>
     </div>
     <div id="editor" />
@@ -13,13 +12,8 @@ import { computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import * as monaco from 'monaco-editor'
 import { MONACO_EDITOR_OPTIONS } from '../constants/monaco'
-import GAlphabetIcon from './GAlphabetIcon.vue'
 
 export default {
-  components: {
-    GAlphabetIcon
-  },
-
   setup() {
     let editor = null
 
