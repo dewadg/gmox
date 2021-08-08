@@ -70,7 +70,8 @@ export default {
         scrollBeyondLastLine: false,
         fontFamily: 'monospace',
         fontSize: '15px',
-        automaticLayout: true
+        automaticLayout: true,
+        tabSize: 2
       })
 
       editor.getModel().onDidChangeContent(handleEditorContentChange)
