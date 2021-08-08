@@ -6,6 +6,7 @@ import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 
 import {
   CHOOSE_SINGLE_FILE,
+  NAVBAR_LIST_ITEM_CLICK,
   PARSE_PROTO_FILE,
   TURN_OFF_GRPC_SERVER,
   TURN_ON_GRPC_SERVER
@@ -13,6 +14,7 @@ import {
 import { handleParseProtoFile } from './services/ipc/protoLoader'
 import { handleChooseSingleFile } from './services/ipc/fileChooser'
 import { handleTurnOffGrpcServer, handleTurnOnGrpcServer } from './services/ipc/grpcServer'
+import { handleNavbarListItemClick } from './services/ipc/contextMenus'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -53,6 +55,8 @@ function registerIpcHandlers({ win }) {
   ipcMain.handle(PARSE_PROTO_FILE, handleParseProtoFile())
   ipcMain.handle(TURN_ON_GRPC_SERVER, handleTurnOnGrpcServer({ win }))
   ipcMain.handle(TURN_OFF_GRPC_SERVER, handleTurnOffGrpcServer())
+
+  ipcMain.on(NAVBAR_LIST_ITEM_CLICK, handleNavbarListItemClick())
 }
 
 // Quit when all windows are closed.
