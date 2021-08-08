@@ -25,7 +25,7 @@
                     v-for="method in service.methods"
                     :key="method.method"
                     prefix-icon="M"
-                    @click="handleEdit({ proto: proto.proto, service: service.service, method: method.method })"
+                    @click="handleEdit({ protoName: proto.proto, serviceName: service.service, method })"
                   >
                     {{ method.method }}
                   </GNavbarListItem>
@@ -72,8 +72,11 @@ export default {
       await store.dispatch('protoParser/parseProtoFile', { path })
     }
 
-    const handleEdit = ({ proto, service, method }) => {
-      store.commit('protoStub/setCurrentPath', `/${proto}.${service}/${method}`)
+    const handleEdit = ({ protoName, serviceName, method }) => {
+      store.commit('protoStub/setCurrentMethod', {
+        path: `/${protoName}.${serviceName}/${method.method}`,
+        returnType: method.returnType
+      })
     }
 
     return {

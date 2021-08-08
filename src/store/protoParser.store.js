@@ -5,11 +5,14 @@ const BACKUP_KEY = '__state_protoParser'
 
 const state = {
   isLoading: false,
-  protos: []
+  protos: [],
+  templates: new Map()
 }
 
 const getters = {
-  protos: state => state.protos
+  protos: state => state.protos,
+
+  findTemplate: state => typeName => state.templates.get(typeName) || ''
 }
 
 const mutations = {
@@ -27,7 +30,8 @@ const mutations = {
 
   backup(state) {
     backup(BACKUP_KEY, {
-      protos: state.protos.map(proto => ({ ...proto }))
+      protos: state.protos.map(proto => ({ ...proto })),
+      templates: Object.fromEntries(state.templates)
     })
   },
 
@@ -36,6 +40,11 @@ const mutations = {
     if (!data) return
 
     state.protos = data.protos
+    state.templates = new Map(Object.entries(data.templates))
+  },
+
+  mergeTemplates(state, { templates }) {
+    state.templates = new Map([...state.templates, ...templates])
   }
 }
 
@@ -44,6 +53,12 @@ const actions = ({ ipcRenderer }) => ({
     commit('parseProtoStart')
 
     const protos = await ipcRenderer.invoke(PARSE_PROTO_FILE, { path })
+
+    protos.forEach((proto) => {
+      const { templates } = proto
+
+      commit('mergeTemplates', { templates })
+    })
 
     commit('parseProtoDone', { protos })
   }

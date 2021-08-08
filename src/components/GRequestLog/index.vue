@@ -47,10 +47,10 @@ export default {
   setup() {
     const store = useStore()
 
-    const currentPath = computed(() => store.getters['protoStub/getCurrentPath'])
+    const currentMethod = computed(() => store.getters['protoStub/getCurrentMethod'])
 
     const logs = computed(() => {
-      return store.getters['requestLog/getByPath'](currentPath.value).map(log => ({
+      return store.getters['requestLog/getByPath'](currentMethod.value.path).map(log => ({
         type: log.type.toUpperCase(),
         payload: JSON.stringify(log.payload, null, 2),
         metadata: JSON.stringify(log.metadata.headers, null, 2),

@@ -5,20 +5,24 @@ const BACKUP_KEY = '__state_protoStub'
 const state = {
   data: new Map(),
 
-  currentPath: ''
+  currentMethod: {
+    path: '',
+    returnType: ''
+  }
 }
 
 const getters = {
   getStubMap: state => Object.fromEntries(state.data),
 
-  getCurrentPath: state => state.currentPath,
+  getCurrentMethod: state => state.currentMethod,
 
   findByPath: state => path => state.data.get(path)
 }
 
 const mutations = {
-  setCurrentPath(state, path) {
-    state.currentPath = path
+  setCurrentMethod(state, { path, returnType }) {
+    state.currentMethod.path = path
+    state.currentMethod.returnType = returnType
   },
 
   setStub(state, { key, value }) {
