@@ -12,6 +12,7 @@
 import { computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import * as monaco from 'monaco-editor'
+import { MONACO_EDITOR_OPTIONS } from '../constants/monaco'
 import GAlphabetIcon from './GAlphabetIcon.vue'
 
 export default {
@@ -56,23 +57,7 @@ export default {
     })
 
     onMounted(() => {
-      editor = monaco.editor.create(document.getElementById('editor'), {
-        value: '',
-        language: 'json',
-        theme: 'vs-dark',
-        minimap: {
-          enabled: false
-        },
-        scrollbar: {
-          vertical: 'hidden',
-          horizontal: 'hidden'
-        },
-        scrollBeyondLastLine: false,
-        fontFamily: 'monospace',
-        fontSize: '15px',
-        automaticLayout: true,
-        tabSize: 2
-      })
+      editor = monaco.editor.create(document.getElementById('editor'), MONACO_EDITOR_OPTIONS)
 
       editor.getModel().onDidChangeContent(handleEditorContentChange)
     })
