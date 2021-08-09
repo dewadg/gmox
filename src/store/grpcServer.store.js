@@ -24,8 +24,9 @@ const mutations = {
 }
 
 const actions = ({ ipcRenderer }) => ({
-  async turnOn({ commit }, { protos, stubs }) {
+  async turnOn({ commit }, { address, protos, stubs }) {
     ipcRenderer.invoke(TURN_ON_GRPC_SERVER, {
+      address,
       protos,
       stubs
     })
