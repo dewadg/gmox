@@ -54,7 +54,7 @@ function registerIpcHandlers({ win }) {
   ipcMain.handle(CHOOSE_SINGLE_FILE, handleChooseSingleFile())
   ipcMain.handle(PARSE_PROTO_FILE, handleParseProtoFile())
   ipcMain.handle(TURN_ON_GRPC_SERVER, handleTurnOnGrpcServer({ win }))
-  ipcMain.handle(TURN_OFF_GRPC_SERVER, handleTurnOffGrpcServer())
+  ipcMain.handle(TURN_OFF_GRPC_SERVER, handleTurnOffGrpcServer({ win }))
 
   ipcMain.on(NAVBAR_LIST_ITEM_CLICK, handleNavbarListItemClick())
 }

@@ -1,4 +1,5 @@
 const grpc = require('@grpc/grpc-js')
+const net = require('net')
 const { INCOMING_REQUEST } = require('../../constants/ipcEvents')
 const { loadProtoFile } = require('./protoLoader')
 
@@ -11,7 +12,21 @@ function start({
   stubs = new Map()
 }) {
   return new Promise((resolve, reject) => {
-    Promise.all(protos.map(proto => loadProtoFile(proto.filePath)))
+    const port = address.split(':')[1]
+
+    isPortOccupied(port)
+      .then((isOccupied) => {
+        if (isOccupied) {
+          const error = new Error('Port is occupied')
+
+          error.port = port
+
+          reject(error)
+          return
+        }
+
+        return Promise.all(protos.map(proto => loadProtoFile(proto.filePath)))
+      })
       .then((loadedProtos) => {
         serverInstance = new grpc.Server()
 
@@ -26,9 +41,13 @@ function start({
           address,
           grpc.ServerCredentials.createInsecure(),
           () => {
-            serverInstance.start()
+            try {
+              serverInstance.start()
 
-            resolve()
+              resolve()
+            } catch (error) {
+              reject(error)
+            }
           }
         )
       })
@@ -95,7 +114,42 @@ function mountStubsToServer({
   }
 }
 
+function isPortOccupied(port) {
+  return new Promise((resolve, reject) => {
+    const { Socket } = net
+
+    const socket = new Socket()
+
+    socket.setTimeout(200)
+
+    socket.on('timeout', () => {
+      resolve(false)
+
+      socket.destroy()
+    })
+
+    socket.on('error', (error) => {
+      if (error.code !== 'ECONNREFUSED') {
+        reject(error)
+      } else {
+        resolve(false)
+      }
+
+      socket.destroy()
+    })
+
+    socket.on('connect', () => {
+      resolve(true)
+
+      socket.destroy()
+    })
+
+    socket.connect(port, '0.0.0.0')
+  })
+}
+
 module.exports = {
   start,
-  stop
+  stop,
+  isPortOccupied
 }

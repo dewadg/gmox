@@ -6,7 +6,12 @@
 import { onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { ipcRenderer } from 'electron'
-import { INCOMING_REQUEST, REMOVE_PROTO } from './constants/ipcEvents'
+import {
+  GRPC_SERVER_OFF,
+  GRPC_SERVER_ON,
+  INCOMING_REQUEST,
+  REMOVE_PROTO
+} from './constants/ipcEvents'
 
 export default {
   setup() {
@@ -39,6 +44,14 @@ export default {
 
       ipcRenderer.on(REMOVE_PROTO, (_, { protoName }) => {
         store.commit('protoParser/removeProto', { protoName })
+      })
+
+      ipcRenderer.on(GRPC_SERVER_ON, () => {
+        store.commit('grpcServer/turnOn')
+      })
+
+      ipcRenderer.on(GRPC_SERVER_OFF, () => {
+        store.commit('grpcServer/turnOff')
       })
 
       restoreStores()

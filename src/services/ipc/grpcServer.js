@@ -1,3 +1,4 @@
+const { GRPC_SERVER_ON, GRPC_SERVER_OFF } = require('../../constants/ipcEvents')
 const { start, stop } = require('../grpc/server')
 
 function handleTurnOnGrpcServer({ win }) {
@@ -13,15 +14,19 @@ function handleTurnOnGrpcServer({ win }) {
         protos,
         stubs
       })
+
+      win.webContents.send(GRPC_SERVER_ON, null)
     } catch (error) {
       console.error('Error while starting gRPC server', error)
     }
   }
 }
 
-function handleTurnOffGrpcServer() {
+function handleTurnOffGrpcServer({ win }) {
   return () => {
     stop()
+
+    win.webContents.send(GRPC_SERVER_OFF, null)
   }
 }
 

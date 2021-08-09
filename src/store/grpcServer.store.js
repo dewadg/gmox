@@ -6,6 +6,7 @@ export const GRPC_SERVER_STATE = {
 }
 
 const state = {
+  isLoading: false,
   currentState: GRPC_SERVER_STATE.OFF
 }
 
@@ -14,30 +15,36 @@ const getters = {
 }
 
 const mutations = {
+  setLoading (state, isLoading) {
+    state.isLoading = isLoading
+  },
+
   turnOn(state) {
     state.currentState = GRPC_SERVER_STATE.ON
+    state.isLoading = false
   },
 
   turnOff(state) {
     state.currentState = GRPC_SERVER_STATE.OFF
+    state.isLoading = false
   }
 }
 
 const actions = ({ ipcRenderer }) => ({
   async turnOn({ commit }, { address, protos, stubs }) {
-    ipcRenderer.invoke(TURN_ON_GRPC_SERVER, {
+    commit('setLoading', true)
+
+    await ipcRenderer.invoke(TURN_ON_GRPC_SERVER, {
       address,
       protos,
       stubs
     })
-
-    commit('turnOn')
   },
 
   async turnOff({ commit }) {
-    ipcRenderer.invoke(TURN_OFF_GRPC_SERVER)
+    commit('setLoading', true)
 
-    commit('turnOff')
+    await ipcRenderer.invoke(TURN_OFF_GRPC_SERVER)
   }
 })
 
