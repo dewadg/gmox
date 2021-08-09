@@ -12,13 +12,28 @@
         v-if="currentServerState === GRPC_SERVER_STATE.OFF"
         @click="handleTurnOnServer"
       >
-        Start
+        <FontAwesomeIcon
+          icon="play-circle"
+          size="lg"
+        />
       </GButton>
       <GButton
         v-if="currentServerState === GRPC_SERVER_STATE.ON"
         @click="handleTurnOffServer"
       >
-        Stop
+        <FontAwesomeIcon
+          icon="stop-circle"
+          size="lg"
+        />
+      </GButton>
+      <GButton
+        :disabled="currentServerState === GRPC_SERVER_STATE.OFF"
+        @click="handleRestartServer"
+      >
+        <FontAwesomeIcon
+          icon="redo"
+          size="lg"
+        />
       </GButton>
     </div>
   </div>
@@ -65,12 +80,18 @@ export default {
 
     const handleTurnOffServer = () => store.dispatch('grpcServer/turnOff')
 
+    const handleRestartServer = async () => {
+      await handleTurnOffServer()
+      await handleTurnOnServer()
+    }
+
     return {
       GRPC_SERVER_STATE,
       address,
       currentServerState,
       handleTurnOnServer,
-      handleTurnOffServer
+      handleTurnOffServer,
+      handleRestartServer
     }
   }
 }

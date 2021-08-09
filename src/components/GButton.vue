@@ -3,8 +3,10 @@
     :class="{
       'g-button': true,
       inline: inline,
-      small: small
+      small: small,
+      disabled: disabled
     }"
+    :disabled="disabled"
   >
     <slot />
   </button>
@@ -18,6 +20,10 @@ export default {
       default: false
     },
     small: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
       type: Boolean,
       default: false
     }
@@ -35,10 +41,19 @@ export default {
   border: none;
   padding: 7.5px 10px;
   background: $primary;
-  color: $font-secondary;
+  color: $font-primary;
   border-radius: 5px;
   font-size: 1em;
   margin: 0;
+
+  &.disabled {
+    color: $font-tertiary;
+
+    &:hover {
+      background: $primary !important;
+      color: $font-tertiary !important;
+    }
+  }
 
   &:hover {
     background: $secondary;
