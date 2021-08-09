@@ -1,0 +1,9 @@
+stages:
+  - test
+
+unit test:
+  stage: test
+  image: node:14
+  script:
+    - yarn install
+    - yarn test
