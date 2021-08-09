@@ -3,6 +3,7 @@
     <div
       class="g-navbar-list-item-container"
       @click="toggle"
+      :oncontextmenu="handleRightClick"
     >
       <div class="g-navbar-list-item-title">
         <GAlphabetIcon>
@@ -44,7 +45,11 @@ export default {
     }
   },
 
-  setup(props, { slots }) {
+  emits: [
+    'right-click'
+  ],
+
+  setup(props, { slots, emit }) {
     const isToggled = ref(false)
 
     const hasAfter = computed(() => Boolean(slots.after))
@@ -53,10 +58,17 @@ export default {
       isToggled.value = !isToggled.value
     }
 
+    const handleRightClick = (event) => {
+      event.preventDefault()
+
+      emit('right-click')
+    }
+
     return {
       isToggled,
       hasAfter,
-      toggle
+      toggle,
+      handleRightClick
     }
   }
 }

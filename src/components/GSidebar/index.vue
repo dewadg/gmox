@@ -11,6 +11,7 @@
         v-for="proto in protos"
         :key="proto.proto"
         prefix-icon="P"
+        @right-click="handleRightClick(proto.proto)"
       >
         <template #after>
           <GNavbarList class="second">
@@ -47,7 +48,7 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { ipcRenderer } from 'electron'
-import { CHOOSE_SINGLE_FILE } from '../../constants/ipcEvents'
+import { CHOOSE_SINGLE_FILE, NAVBAR_LIST_ITEM_CLICK } from '../../constants/ipcEvents'
 import GNavbarList from './GNavbarList.vue'
 import GNavbarListItem from './GNavbarListItem.vue'
 import GButton from '../GButton.vue'
@@ -79,10 +80,15 @@ export default {
       })
     }
 
+    const handleRightClick = (protoName) => {
+      ipcRenderer.send(NAVBAR_LIST_ITEM_CLICK, { protoName })
+    }
+
     return {
       protos,
       handleChooseProtoFile,
-      handleEdit
+      handleEdit,
+      handleRightClick
     }
   }
 }

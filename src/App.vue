@@ -6,7 +6,7 @@
 import { onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { ipcRenderer } from 'electron'
-import { INCOMING_REQUEST } from './constants/ipcEvents'
+import { INCOMING_REQUEST, REMOVE_PROTO } from './constants/ipcEvents'
 
 export default {
   setup() {
@@ -35,6 +35,10 @@ export default {
     onMounted(() => {
       ipcRenderer.on(INCOMING_REQUEST, (_, args) => {
         store.commit('requestLog/log', args)
+      })
+
+      ipcRenderer.on(REMOVE_PROTO, (_, { protoName }) => {
+        store.commit('protoParser/removeProto', { protoName })
       })
 
       restoreStores()

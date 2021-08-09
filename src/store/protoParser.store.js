@@ -45,6 +45,10 @@ const mutations = {
 
   mergeTemplates(state, { templates }) {
     state.templates = new Map([...state.templates, ...templates])
+  },
+
+  removeProto(state, { protoName }) {
+    state.protos = state.protos.filter(proto => proto.proto !== protoName)
   }
 }
 
