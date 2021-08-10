@@ -1,5 +1,8 @@
 <template>
-  <router-view/>
+  <div>
+    <router-view/>
+    <GAlert />
+  </div>
 </template>
 
 <script>
@@ -12,8 +15,13 @@ import {
   INCOMING_REQUEST,
   REMOVE_PROTO
 } from './constants/ipcEvents'
+import GAlert from './components/GAlert.vue'
 
 export default {
+  components: {
+    GAlert
+  },
+
   setup() {
     const store = useStore()
 
