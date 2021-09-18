@@ -1,7 +1,7 @@
 const grpc = require('@grpc/grpc-js')
 const net = require('net')
 const { INCOMING_REQUEST } = require('../../constants/ipcEvents')
-const { loadProtoFile } = require('./protoLoader')
+const { loadProtoFile, flattenProto, normalizePackage } = require('./protoLoader')
 
 let serverInstance
 
@@ -25,9 +25,17 @@ function start({
           return
         }
 
-        return Promise.all(protos.map(proto => loadProtoFile(proto.filePath)))
+        return Promise.all(protos.map(async (proto) => {
+          const loadedProto = await loadProtoFile(proto.filePath)
+
+          return normalizePackage(flattenProto(loadedProto))
+        }))
       })
       .then((loadedProtos) => {
+        if (serverInstance) {
+          serverInstance.forceShutdown()
+        }
+
         serverInstance = new grpc.Server()
 
         mountStubsToServer({
@@ -80,7 +88,10 @@ function mountStubsToServer({
         break
       }
 
-      if (!service) continue
+      if (!service) {
+        console.warn(`No service found for package ${packageName}`)
+        continue
+      }
 
       // generate mocked implementation
       const implementation = Object.values(Object.values(service).pop())

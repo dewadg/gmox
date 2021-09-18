@@ -1,7 +1,8 @@
 const {
   loadProtoFile,
   flattenProto,
-  buildTemplate
+  buildTemplate,
+  normalizePackage
 } = require('../protoLoader')
 
 describe('flattenProto', () => {
@@ -166,12 +167,70 @@ describe('buildTemplate', () => {
   ]
 
   beforeAll(async () => {
-    proto = flattenProto(await loadProtoFile(__dirname + '/golden/example.proto'))
+    proto = flattenProto(await loadProtoFile([
+      __dirname + '/golden/example.proto',
+      __dirname + '/golden/example.types.proto'
+    ]))
   })
 
   testTables.forEach((tt) => {
     test(tt.name, () => {
       const got = buildTemplate(proto, tt.args.pkg, tt.args.definition)
+
+      expect(got).toEqual(tt.want)
+    })
+  })
+})
+
+describe('normalizePackage', () => {
+  const testTables = [
+    {
+      name: 'example 1',
+      args: {
+        proto: {
+          test: {
+            tust: {
+              tast: {
+                format: 'test'
+              }
+            }
+          }
+        }
+      },
+      want: {
+        'test.tust': {
+          'tast': {
+            format: 'test'
+          }
+        }
+      }
+    },
+    {
+      name: 'example 2',
+      args: {
+        proto: {
+          mbs: {
+            pallet: {
+              GetPalletMovementRequest: {
+                format: 'Test'
+              }
+            },
+          }
+        }
+      },
+      want: {
+        'mbs.pallet': {
+          'GetPalletMovementRequest': {
+            format: 'Test'
+          }
+        }
+      }
+    }
+  ]
+
+  testTables.forEach((tt) => {
+    test(tt.name, () => {
+      const got = normalizePackage(tt.args.proto)
 
       expect(got).toEqual(tt.want)
     })

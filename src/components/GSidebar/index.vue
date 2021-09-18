@@ -48,7 +48,7 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { ipcRenderer } from 'electron'
-import { CHOOSE_SINGLE_FILE, NAVBAR_LIST_ITEM_CLICK } from '../../constants/ipcEvents'
+import { CHOOSE_FILES, NAVBAR_LIST_ITEM_CLICK } from '../../constants/ipcEvents'
 import GNavbarList from './GNavbarList.vue'
 import GNavbarListItem from './GNavbarListItem.vue'
 import GButton from '../GButton.vue'
@@ -68,7 +68,7 @@ export default {
     const protos = computed(() => store.getters['protoParser/protos'])
 
     const handleChooseProtoFile = async () => {
-      const path = await ipcRenderer.invoke(CHOOSE_SINGLE_FILE)
+      const path = await ipcRenderer.invoke(CHOOSE_FILES)
 
       await store.dispatch('protoParser/parseProtoFile', { path })
     }

@@ -1,15 +1,21 @@
 const { dialog } = require('electron')
 
-function handleChooseSingleFile() {
+function handleChooseFiles() {
   return async () => {
     try {
       const result = await dialog.showOpenDialog({
-        properties: ['openFile']
+        properties: ['openFile', 'multiSelections'],
+        filters: [
+          {
+            name: 'Proto',
+            extensions: ['proto']
+          }
+        ]
       })
-  
+
       return (!result || !result.filePaths || !Array.isArray(result.filePaths))
         ? undefined
-        : result.filePaths[0]
+        : result.filePaths
     } catch (error) {
       console.error('Error while opening file dialog', error)
     }
@@ -17,5 +23,5 @@ function handleChooseSingleFile() {
 }
 
 module.exports = {
-  handleChooseSingleFile
+  handleChooseFiles
 }
