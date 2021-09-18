@@ -61,7 +61,7 @@ export default {
       const stubs = new Map(Object.entries({ ...store.getters['protoStub/getStubMap'] }))
 
       const protos = store.getters['protoParser/protos'].map(proto => ({
-        filePath: proto.filePath,
+        filePath: [...proto.filePath],
         proto: proto.proto,
         services: proto.services.map(service => ({
           ...service,

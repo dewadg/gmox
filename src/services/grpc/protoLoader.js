@@ -9,11 +9,10 @@ const PROTO_LOAD_OPTIONS = {
   oneofs: true
 }
 
-async function loadProtoFile(path) {
-  const definition = await protoLoader.load(path, PROTO_LOAD_OPTIONS)
-  const proto = grpc.loadPackageDefinition(definition)
+async function loadProtoFile(paths) {
+  const definition = await protoLoader.load(paths, PROTO_LOAD_OPTIONS)
 
-  return proto
+  return grpc.loadPackageDefinition(definition)
 }
 
 function flattenProto(proto) {
@@ -70,6 +69,12 @@ function buildTemplate(proto, pkg, definition) {
       case 'TYPE_FLOAT':
         value = !isRepeated ? 0.0 : [0.0]
         break
+      case 'TYPE_DOUBLE':
+        value = !isRepeated ? 0.0 : [0.0]
+        break
+      case 'TYPE_BYTES':
+        value = !isRepeated ? [] : [[]]
+        break
       default:
         console.error(`Proto parsing error. Unknown type: ${field.type} ${field.typeName}`)
     }
@@ -82,21 +87,22 @@ function buildTemplate(proto, pkg, definition) {
 
 async function parseProto(path) {
   const proto = await loadProtoFile(path)
-  const flattennedProto = flattenProto(proto)
+  const flattenedProto = flattenProto(proto)
+  const normalizedProto = normalizePackage(flattenedProto)
 
-  return Object.keys(proto)
-    .filter(keys => keys !== 'google')
+  return Object.keys(normalizedProto)
+    .filter(keys => !keys.startsWith('google'))
     .map((pkg) => {
       const services = []
       const templates = new Map()
 
-      for (const item of Object.keys(proto[pkg])) {
-        if (typeof proto[pkg][item] === 'function') {
-          const methods = Object.keys(proto[pkg][item].service).map(method => ({
+      for (const item of Object.keys(normalizedProto[pkg])) {
+        if (typeof normalizedProto[pkg][item] === 'function') {
+          const methods = Object.keys(normalizedProto[pkg][item].service).map(method => ({
             method,
-            path: proto[pkg][item].service[method].path,
-            originalName: proto[pkg][item].service[method].originalName,
-            returnType: proto[pkg][item].service[method].responseType.type.name
+            path: normalizedProto[pkg][item].service[method].path,
+            originalName: normalizedProto[pkg][item].service[method].originalName,
+            returnType: normalizedProto[pkg][item].service[method].responseType.type.name
           }))
 
           services.push({
@@ -105,8 +111,8 @@ async function parseProto(path) {
           })
         }
 
-        if (typeof proto[pkg][item] === 'object') {
-          templates.set(item, JSON.stringify(buildTemplate(flattennedProto, pkg, item), null, 2))
+        if (typeof normalizedProto[pkg][item] === 'object') {
+          templates.set(item, JSON.stringify(buildTemplate(flattenedProto, pkg, item), null, 2))
         }
       }
 
@@ -119,9 +125,26 @@ async function parseProto(path) {
     })
 }
 
+function normalizePackage(proto) {
+  return Object.keys(proto)
+    .reduce((carry, pkg) => {
+      const splitPkg = pkg.split('.')
+      const namespaceName = splitPkg.slice(0, splitPkg.length - 1).join('.')
+      const pkgName = splitPkg.pop()
+
+      return {
+        ...carry,
+        [namespaceName]: carry[namespaceName]
+          ? { ...carry[namespaceName], [pkgName]: proto[pkg] }
+          : { [pkgName]: proto[pkg] }
+      }
+    }, {})
+}
+
 module.exports = {
   loadProtoFile,
   flattenProto,
   buildTemplate,
-  parseProto
+  parseProto,
+  normalizePackage
 }

@@ -1,5 +1,5 @@
 // File events
-export const CHOOSE_SINGLE_FILE = 'CHOOSE_SINGLE_FILE'
+export const CHOOSE_FILES = 'CHOOSE_FILES'
 export const PARSE_PROTO_FILE = 'PARSE_PROTO_FILE'
 
 // Server events

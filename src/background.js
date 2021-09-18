@@ -5,14 +5,14 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
 
 import {
-  CHOOSE_SINGLE_FILE,
+  CHOOSE_FILES,
   NAVBAR_LIST_ITEM_CLICK,
   PARSE_PROTO_FILE,
   TURN_OFF_GRPC_SERVER,
   TURN_ON_GRPC_SERVER
 } from './constants/ipcEvents'
 import { handleParseProtoFile } from './services/ipc/protoLoader'
-import { handleChooseSingleFile } from './services/ipc/fileChooser'
+import { handleChooseFiles } from './services/ipc/fileChooser'
 import { handleTurnOffGrpcServer, handleTurnOnGrpcServer } from './services/ipc/grpcServer'
 import { handleNavbarListItemClick } from './services/ipc/contextMenus'
 
@@ -29,7 +29,7 @@ async function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      
+
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
@@ -51,7 +51,7 @@ async function createWindow() {
 }
 
 function registerIpcHandlers({ win }) {
-  ipcMain.handle(CHOOSE_SINGLE_FILE, handleChooseSingleFile())
+  ipcMain.handle(CHOOSE_FILES, handleChooseFiles())
   ipcMain.handle(PARSE_PROTO_FILE, handleParseProtoFile())
   ipcMain.handle(TURN_ON_GRPC_SERVER, handleTurnOnGrpcServer({ win }))
   ipcMain.handle(TURN_OFF_GRPC_SERVER, handleTurnOffGrpcServer({ win }))
