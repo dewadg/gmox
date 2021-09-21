@@ -5,6 +5,12 @@
         <FontAwesomeIcon icon="plus" size="xs" />
         Import Proto
       </GButton>
+      <input
+        type="text"
+        class="input-keyword"
+        v-model="keyword"
+        placeholder="Search method"
+      />
     </div>
     <GNavbarList>
       <GNavbarListItem
@@ -45,7 +51,7 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { ipcRenderer } from 'electron'
 import { CHOOSE_FILES, NAVBAR_LIST_ITEM_CLICK } from '../../constants/ipcEvents'
@@ -65,7 +71,41 @@ export default {
   setup() {
     const store = useStore()
 
-    const protos = computed(() => store.getters['protoParser/protos'])
+    const keyword = ref('')
+
+    const protos = computed(() => {
+      if (keyword.value === '') return store.getters['protoParser/protos']
+
+      const filteredProtos = []
+
+      for (const proto of store.getters['protoParser/protos']) {
+        const services = []
+
+        for (const service of proto.services) {
+          const methods = []
+
+          for (const method of service.methods) {
+            if (method.method.toLowerCase().includes(keyword.value.toLowerCase())) {
+              methods.push(method)
+            }
+          }
+
+          services.push({
+            ...service,
+            methods
+          })
+        }
+
+        if (services.length > 0) {
+          filteredProtos.push({
+            ...proto,
+            services
+          })
+        }
+      }
+
+      return filteredProtos
+    })
 
     const handleChooseProtoFile = async () => {
       const path = await ipcRenderer.invoke(CHOOSE_FILES)
@@ -85,6 +125,7 @@ export default {
     }
 
     return {
+      keyword,
       protos,
       handleChooseProtoFile,
       handleEdit,
@@ -107,6 +148,23 @@ export default {
 
   .g-sidebar-control {
     padding: 10px;
+
+    button {
+      margin-bottom: 15px;
+    }
+
+    .input-keyword {
+      background: $secondary;
+      box-sizing: border-box;
+      width: 100%;
+      height: 35px;
+      border: none;
+      border-radius: 5px;
+      padding: 0 10px;
+      text-align: center;
+      font-size: 1em;
+      color: $font-secondary;
+    }
   }
 }
 </style>
