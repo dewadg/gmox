@@ -1,26 +1,47 @@
 <template>
-  <div class="home">
-    <GNavbar />
-    <GSidebar />
-    <GStubEditor />
-    <GRequestLog />
+  <div
+    class="home"
+    :class="{ centered: !workspaceSet }"
+  >
+    <GNoWorkspace v-if="!workspaceSet" />
+    <GWorkspace v-else />
   </div>
 </template>
 
 <script>
-import GNavbar from '@/components/GNavbar'
-import GSidebar from '@/components/GSidebar'
-import GStubEditor from '@/components/GStubEditor'
-import GRequestLog from '@/components/GRequestLog'
+import { mapGetters } from 'vuex'
+import GNoWorkspace from '@/components/GNoWorkspace'
+import GWorkspace from '@/components/GWorkspace'
 
 export default {
   name: 'Home',
 
   components: {
-    GNavbar,
-    GSidebar,
-    GStubEditor,
-    GRequestLog
+    GNoWorkspace,
+    GWorkspace
+  },
+
+  computed: {
+    ...mapGetters({
+      workspaceCount: 'workspace/getCount'
+    }),
+
+    workspaceSet () {
+      return this.workspaceCount > 0
+    }
   }
 }
 </script>
+
+<style lang="scss">
+.home {
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  &.centered {
+    align-items: center;
+    justify-content: space-around;
+  }
+}
+</style>

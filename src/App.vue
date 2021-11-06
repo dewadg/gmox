@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrapper">
     <router-view/>
     <GAlert />
   </div>
@@ -76,6 +76,15 @@ export default {
   font-size: 13px;
   letter-spacing: 0.025em;
   outline: none;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app,
+.wrapper {
+  height: 100%;
 }
 
 body {
