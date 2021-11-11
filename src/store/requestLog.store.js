@@ -3,26 +3,32 @@ import { backup, restore } from '../services/storage/localStorage'
 const BACKUP_KEY = '__state_requestLog'
 
 const state = {
-  data: new Map()
+  data: {}
 }
 
 const getters = {
-  getByPath: state => path => state.data.get(path) || []
+  getByPath: state => (workspaceId, path) => (state.data[workspaceId] || {})[path] || []
 }
 
 const mutations = {
   log (state, request) {
     const logs = [
       request,
-      ...(state.data.get(request.path) || [])
+      ...((state.data[request.workspaceId] || {})[request.path] || [])
     ]
 
-    state.data.set(request.path, logs)
+    state.data = {
+      ...state.data,
+      [request.workspaceId]: {
+        ...((state.data[request.workspaceId] || {})[request.path] || {}),
+        [request.path]: logs
+      }
+    }
   },
 
   backup(state) {
     backup(BACKUP_KEY, {
-      data: Object.fromEntries(state.data)
+      data: state.data
     })
   },
 
@@ -30,7 +36,7 @@ const mutations = {
     const data = restore(BACKUP_KEY)
     if (!data) return
 
-    state.data = new Map(Object.entries(data.data))
+    state.data = data.data
   }
 }
 
