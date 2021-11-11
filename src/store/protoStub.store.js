@@ -34,8 +34,8 @@ const mutations = {
     state.data = {
       ...state.data,
       [workspaceId]: {
-        [key]: value,
-        ...(state.data[workspaceId] || {})
+        ...(state.data[workspaceId] || {}),
+        [key]: value
       }
     }
   },
