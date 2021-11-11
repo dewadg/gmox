@@ -1,5 +1,5 @@
 const { GRPC_SERVER_ON, GRPC_SERVER_OFF, IPC_MAIN_ERROR } = require('../../constants/ipcEvents')
-const { start, stop } = require('../grpc/server')
+const { start, stop, stopAll } = require('../grpc/server')
 
 function handleTurnOnGrpcServer({ win }) {
   return async (_, {
@@ -34,7 +34,14 @@ function handleTurnOffGrpcServer({ win }) {
   }
 }
 
+function handleTurnOffAllGrpcServers() {
+  return () => {
+    stopAll()
+  }
+}
+
 module.exports = {
   handleTurnOnGrpcServer,
-  handleTurnOffGrpcServer
+  handleTurnOffGrpcServer,
+  handleTurnOffAllGrpcServers
 }

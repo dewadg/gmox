@@ -8,12 +8,13 @@ import {
   CHOOSE_FILES,
   NAVBAR_LIST_ITEM_CLICK,
   PARSE_PROTO_FILE,
+  TURN_OFF_ALL_GRPC_SERVERS,
   TURN_OFF_GRPC_SERVER,
   TURN_ON_GRPC_SERVER
 } from './constants/ipcEvents'
 import { handleParseProtoFile } from './services/ipc/protoLoader'
 import { handleChooseFiles } from './services/ipc/fileChooser'
-import { handleTurnOffGrpcServer, handleTurnOnGrpcServer } from './services/ipc/grpcServer'
+import { handleTurnOffAllGrpcServers, handleTurnOffGrpcServer, handleTurnOnGrpcServer } from './services/ipc/grpcServer'
 import { handleNavbarListItemClick } from './services/ipc/contextMenus'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -55,6 +56,7 @@ function registerIpcHandlers({ win }) {
   ipcMain.handle(PARSE_PROTO_FILE, handleParseProtoFile())
   ipcMain.handle(TURN_ON_GRPC_SERVER, handleTurnOnGrpcServer({ win }))
   ipcMain.handle(TURN_OFF_GRPC_SERVER, handleTurnOffGrpcServer({ win }))
+  ipcMain.handle(TURN_OFF_ALL_GRPC_SERVERS, handleTurnOffAllGrpcServers())
 
   ipcMain.on(NAVBAR_LIST_ITEM_CLICK, handleNavbarListItemClick())
 }

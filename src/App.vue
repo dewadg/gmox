@@ -13,7 +13,8 @@ import {
   GRPC_SERVER_OFF,
   GRPC_SERVER_ON,
   INCOMING_REQUEST,
-  REMOVE_PROTO
+  REMOVE_PROTO,
+  TURN_OFF_ALL_GRPC_SERVERS
 } from './constants/ipcEvents'
 import GAlert from './components/GAlert.vue'
 
@@ -47,6 +48,12 @@ export default {
       }, 5000)
     }
 
+    const turnOffAllServers = () => {
+      setTimeout(() => {
+        ipcRenderer.invoke(TURN_OFF_ALL_GRPC_SERVERS, null)
+      }, 1000)
+    }
+
     onMounted(() => {
       ipcRenderer.on(INCOMING_REQUEST, (_, args) => {
         store.commit('requestLog/log', { ...args })
@@ -69,6 +76,7 @@ export default {
 
       restoreStores()
       backupStores()
+      turnOffAllServers()
     })
   }
 }

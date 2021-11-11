@@ -166,8 +166,17 @@ function isPortOccupied(port) {
   })
 }
 
+function stopAll() {
+  servers.forEach((server, key) => {
+    server.forceShutdown()
+
+    servers.delete(key)
+  })
+}
+
 module.exports = {
   start,
   stop,
-  isPortOccupied
+  isPortOccupied,
+  stopAll
 }
