@@ -31,6 +31,7 @@ export default {
       return store.getters['workspace/getList']
     })
 
+    // FIXME: fix workspace switch bug
     const handleCloseWorkspace = (id) => {
       store.commit('workspace/closeWorkspace', id)
     }
