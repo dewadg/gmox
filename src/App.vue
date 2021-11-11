@@ -51,6 +51,8 @@ export default {
     const turnOffAllServers = () => {
       setTimeout(() => {
         ipcRenderer.invoke(TURN_OFF_ALL_GRPC_SERVERS, null)
+
+        store.commit('grpcServer/turnAllOff')
       }, 1000)
     }
 

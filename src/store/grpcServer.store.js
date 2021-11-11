@@ -1,9 +1,12 @@
+import { backup, restore } from '../services/storage/localStorage'
 import { TURN_OFF_GRPC_SERVER, TURN_ON_GRPC_SERVER } from '../constants/ipcEvents'
 
 export const GRPC_SERVER_STATE = {
   ON: 'ON',
   OFF: 'OFF'
 }
+
+const BACKUP_KEY = '__state_grpcServer'
 
 const state = {
   isLoading: false,
@@ -40,6 +43,28 @@ const mutations = {
       [workspaceId]: GRPC_SERVER_STATE.OFF
     }
     state.isLoading = false
+  },
+
+  turnAllOff(state) {
+    Object.keys(state.currentState).forEach((workspaceId) => {
+      state.currentState = {
+        ...state.currentState,
+        [workspaceId]: GRPC_SERVER_STATE.OFF
+      }
+    })
+  },
+
+  backup(state) {
+    backup(BACKUP_KEY, {
+      currentState: state.currentState
+    })
+  },
+
+  restore(state) {
+    const data = restore(BACKUP_KEY)
+    if (!data) return
+
+    state.currentState = data.currentState
   }
 }
 
