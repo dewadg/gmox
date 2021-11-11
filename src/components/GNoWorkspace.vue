@@ -11,6 +11,7 @@
 <script>
 import GButton from '@/components/GButton'
 import { useStore } from 'vuex'
+import { computed } from '@vue/runtime-core'
 
 export default {
   components: {
@@ -20,6 +21,10 @@ export default {
   setup () {
     const store = useStore()
 
+    const workspaceSet = computed(() => {
+      store.getters['workspace/getCount'] > 0
+    })
+
     const handleCreateWorkspace = () => {
       store.commit('workspace/createWorkspace', {
         id: String(Math.random()),
@@ -28,6 +33,8 @@ export default {
     }
 
     return {
+      workspaceSet,
+
       handleCreateWorkspace
     }
   }
