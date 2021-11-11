@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { ipcRenderer } from 'electron'
 import {
@@ -24,6 +24,8 @@ export default {
 
   setup() {
     const store = useStore()
+
+    const currentWorkspace = computed(() => store.getters['workspace/current'])
 
     const restoreStores = () => {
       const mutations = Object.keys(store._mutations)
@@ -47,19 +49,25 @@ export default {
 
     onMounted(() => {
       ipcRenderer.on(INCOMING_REQUEST, (_, args) => {
-        store.commit('requestLog/log', args)
+        store.commit('requestLog/log', {
+          workspaceId: currentWorkspace.value.id,
+          ...args
+        })
       })
 
       ipcRenderer.on(REMOVE_PROTO, (_, { protoName }) => {
-        store.commit('protoParser/removeProto', { protoName })
+        store.commit('protoParser/removeProto', {
+          workspaceId: currentWorkspace.value.id,
+          protoName
+        })
       })
 
       ipcRenderer.on(GRPC_SERVER_ON, () => {
-        store.commit('grpcServer/turnOn')
+        store.commit('grpcServer/turnOn', { workspaceId: currentWorkspace.value.id })
       })
 
       ipcRenderer.on(GRPC_SERVER_OFF, () => {
-        store.commit('grpcServer/turnOff')
+        store.commit('grpcServer/turnOff', { workspaceId: currentWorkspace.value.id })
       })
 
       restoreStores()

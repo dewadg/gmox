@@ -26,10 +26,14 @@ export default {
     })
 
     const handleCreateWorkspace = () => {
+      const id = String(Math.random())
+
       store.commit('workspace/createWorkspace', {
-        id: String(Math.random()),
+        id,
         name: 'New Workspace'
       })
+
+      store.commit('workspace/setWorkspace', id)
     }
 
     return {

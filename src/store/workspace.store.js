@@ -1,18 +1,5 @@
 const state = {
-  data: {
-    123456: {
-      id: '123456',
-      name: 'Default'
-    },
-    123457: {
-      id: '123457',
-      name: 'MBS'
-    },
-    123458: {
-      id: '123458',
-      name: 'Payment'
-    }
-  },
+  data: {},
   current: null
 }
 

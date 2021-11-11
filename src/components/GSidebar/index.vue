@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { ipcRenderer } from 'electron'
 import { CHOOSE_FILES, NAVBAR_LIST_ITEM_CLICK } from '../../constants/ipcEvents'
@@ -77,12 +77,18 @@ export default {
 
     const keyword = ref('')
 
+    const currentWorkspace = computed(() => {
+      return store.getters['workspace/current']
+    })
+
     const protos = computed(() => {
-      if (keyword.value === '') return store.getters['protoParser/protos']
+      const protosFromStore = store.getters['protoParser/protos'](currentWorkspace.value.id)
+
+      if (keyword.value === '') return protosFromStore
 
       const filteredProtos = []
 
-      for (const proto of store.getters['protoParser/protos']) {
+      for (const proto of protosFromStore) {
         const services = []
 
         for (const service of proto.services) {
@@ -111,18 +117,15 @@ export default {
       return filteredProtos
     })
 
-    onMounted(() => {
-      console.log(protos.value[protos.value.length - 1])
-    })
-
     const handleChooseProtoFile = async () => {
       const path = await ipcRenderer.invoke(CHOOSE_FILES)
 
-      await store.dispatch('protoParser/parseProtoFile', { path })
+      await store.dispatch('protoParser/parseProtoFile', { workspaceId: currentWorkspace.value.id, path })
     }
 
     const handleEdit = ({ protoName, serviceName, method }) => {
       store.commit('protoStub/setCurrentMethod', {
+        workspaceId: currentWorkspace.value.id,
         path: `/${protoName}.${serviceName}/${method.method}`,
         returnType: method.returnType
       })
