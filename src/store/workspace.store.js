@@ -1,3 +1,7 @@
+import { backup, restore } from '../services/storage/localStorage'
+
+const BACKUP_KEY = '__state_workspace'
+
 const state = {
   data: {},
   current: null
@@ -27,6 +31,21 @@ const mutations = {
 
   setWorkspace (state, id) {
     state.current = id
+  },
+
+  backup(state) {
+    backup(BACKUP_KEY, {
+      data: state.data,
+      current: state.current
+    })
+  },
+
+  restore(state) {
+    const data = restore(BACKUP_KEY)
+    if (!data) return
+
+    state.data = data.data
+    state.current = data.current
   }
 }
 
