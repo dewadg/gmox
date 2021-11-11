@@ -3,6 +3,7 @@
     <li
       v-for="workspace in workspaces"
       :key="workspace.id"
+      @click="handleSetWorkspace(workspace.id)"
     >
       <span>{{ workspace.name }}</span>
       <div
@@ -34,10 +35,15 @@ export default {
       store.commit('workspace/closeWorkspace', id)
     }
 
+    const handleSetWorkspace = (id) => {
+      store.commit('workspace/setWorkspace', id)
+    }
+
     return {
       workspaces,
 
-      handleCloseWorkspace
+      handleCloseWorkspace,
+      handleSetWorkspace
     }
   }
 }

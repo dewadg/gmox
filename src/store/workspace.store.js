@@ -12,13 +12,16 @@ const state = {
       id: '123458',
       name: 'Payment'
     }
-  }
+  },
+  current: null
 }
 
 const getters = {
   getCount: state => Object.values(state.data).length || 0,
 
-  getList: state => Object.values(state.data)
+  getList: state => Object.values(state.data),
+
+  current: state => state.current ? state.data[state.current] : null
 }
 
 const mutations = {
@@ -33,6 +36,10 @@ const mutations = {
     delete state.data[id]
 
     state.data = { ...state.data }
+  },
+
+  setWorkspace (state, id) {
+    state.current = id
   }
 }
 
