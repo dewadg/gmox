@@ -3,19 +3,21 @@ const { start, stop } = require('../grpc/server')
 
 function handleTurnOnGrpcServer({ win }) {
   return async (_, {
+    workspaceId,
     address,
     protos,
     stubs
   }) => {
     try {
       await start({
+        workspaceId,
         win,
         address,
         protos,
         stubs
       })
 
-      win.webContents.send(GRPC_SERVER_ON, null)
+      win.webContents.send(GRPC_SERVER_ON, { workspaceId })
     } catch (error) {
       console.error('Error while starting gRPC server', error)
 
@@ -25,10 +27,10 @@ function handleTurnOnGrpcServer({ win }) {
 }
 
 function handleTurnOffGrpcServer({ win }) {
-  return () => {
-    stop()
+  return (_, { workspaceId }) => {
+    stop({ workspaceId })
 
-    win.webContents.send(GRPC_SERVER_OFF, null)
+    win.webContents.send(GRPC_SERVER_OFF, { workspaceId })
   }
 }
 

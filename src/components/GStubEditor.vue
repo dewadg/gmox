@@ -19,7 +19,9 @@ export default {
 
     const store = useStore()
 
-    const currentStubMethod = computed(() => store.getters['protoStub/getCurrentMethod'])
+    const currentWorkspace = computed(() => store.getters['workspace/current'])
+
+    const currentStubMethod = computed(() => store.getters['protoStub/getCurrentMethod'](currentWorkspace.value.id))
 
     const title = computed(() => currentStubMethod.value.path
       ? currentStubMethod.value.path
@@ -30,20 +32,20 @@ export default {
 
     const handleEditorContentChange = () => {
       store.commit('protoStub/setStub', {
+        workspaceId: currentWorkspace.value.id,
         key: currentStubMethod.value.path,
         value: editor.getModel().getValue()
       })
     }
 
     // reload current key's stub during key switch
-    watch(currentStubMethod.value, (nextStubMethod) => {
-      if (!nextStubMethod.path) return
+    watch(currentStubMethod, (nextStub) => {
+      if (!nextStub.path) return
 
       if (editor) {
-        let stub = store.getters['protoStub/findByPath'](nextStubMethod.path)
-
+        let stub = store.getters['protoStub/findByPath'](currentWorkspace.value.id, nextStub.path)
         if (!stub) {
-          stub = store.getters['protoParser/findTemplate'](nextStubMethod.returnType)
+          stub = store.getters['protoParser/findTemplate'](currentWorkspace.value.id, nextStub.returnType)
         }
 
         editor.getModel().setValue(stub || '')

@@ -9,9 +9,11 @@
 </template>
 
 <script>
-import GButton from '@/components/GButton'
+
 import { useStore } from 'vuex'
 import { computed } from '@vue/runtime-core'
+import { v4 as uuid } from 'uuid'
+import GButton from '@/components/GButton'
 
 export default {
   components: {
@@ -26,7 +28,7 @@ export default {
     })
 
     const handleCreateWorkspace = () => {
-      const id = String(Math.random())
+      const id = uuid()
 
       store.commit('workspace/createWorkspace', {
         id,
@@ -34,6 +36,7 @@ export default {
       })
 
       store.commit('workspace/setWorkspace', id)
+      store.commit('grpcServer/register', id)
     }
 
     return {

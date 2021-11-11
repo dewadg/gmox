@@ -7,11 +7,11 @@ export const GRPC_SERVER_STATE = {
 
 const state = {
   isLoading: false,
-  currentState: GRPC_SERVER_STATE.OFF
+  currentState: {}
 }
 
 const getters = {
-  currentState: state => state.currentState
+  currentState: state => workspaceId => state.currentState[workspaceId]
 }
 
 const mutations = {
@@ -19,32 +19,46 @@ const mutations = {
     state.isLoading = isLoading
   },
 
-  turnOn(state) {
-    state.currentState = GRPC_SERVER_STATE.ON
+  register (state, workspaceId) {
+    state.currentState = {
+      ...state.currentState,
+      [workspaceId]: GRPC_SERVER_STATE.OFF
+    }
+  },
+
+  turnOn(state, workspaceId) {
+    state.currentState = {
+      ...state.currentState,
+      [workspaceId]: GRPC_SERVER_STATE.ON
+    }
     state.isLoading = false
   },
 
-  turnOff(state) {
-    state.currentState = GRPC_SERVER_STATE.OFF
+  turnOff(state, workspaceId) {
+    state.currentState = {
+      ...state.currentState,
+      [workspaceId]: GRPC_SERVER_STATE.OFF
+    }
     state.isLoading = false
   }
 }
 
 const actions = ({ ipcRenderer }) => ({
-  async turnOn({ commit }, { address, protos, stubs }) {
+  async turnOn({ commit }, { workspaceId, address, protos, stubs }) {
     commit('setLoading', true)
 
     await ipcRenderer.invoke(TURN_ON_GRPC_SERVER, {
+      workspaceId,
       address,
       protos,
       stubs
     })
   },
 
-  async turnOff({ commit }) {
+  async turnOff({ commit }, { workspaceId }) {
     commit('setLoading', true)
 
-    await ipcRenderer.invoke(TURN_OFF_GRPC_SERVER)
+    await ipcRenderer.invoke(TURN_OFF_GRPC_SERVER, { workspaceId })
   }
 })
 

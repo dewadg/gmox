@@ -3,35 +3,46 @@ import { backup, restore } from '../services/storage/localStorage'
 const BACKUP_KEY = '__state_protoStub'
 
 const state = {
-  data: new Map(),
+  data: {},
 
-  currentMethod: {
-    path: '',
-    returnType: ''
-  }
+  currentMethod: {}
 }
 
 const getters = {
-  getStubMap: state => Object.fromEntries(state.data),
+  getStubMap: state => workspaceId => state.data[workspaceId] || {},
 
-  getCurrentMethod: state => state.currentMethod,
+  getCurrentMethod: state => workspaceId => state.currentMethod[workspaceId] || {
+    path: '',
+    returnType: ''
+  },
 
-  findByPath: state => path => state.data.get(path)
+  findByPath: state => (workspaceId, path) => (state.data[workspaceId] || {})[path]
 }
 
 const mutations = {
-  setCurrentMethod(state, { path, returnType }) {
-    state.currentMethod.path = path
-    state.currentMethod.returnType = returnType
+  setCurrentMethod(state, { workspaceId, path, returnType }) {
+    state.currentMethod = {
+      ...state.currentMethod,
+      [workspaceId]: {
+        path,
+        returnType
+      }
+    }
   },
 
-  setStub(state, { key, value }) {
-    state.data.set(key, value)
+  setStub(state, { workspaceId, key, value }) {
+    state.data = {
+      ...state.data,
+      [workspaceId]: {
+        [key]: value,
+        ...(state.data[workspaceId] || {})
+      }
+    }
   },
 
   backup(state) {
     backup(BACKUP_KEY, {
-      data: Object.fromEntries(state.data)
+      data: state.data
     })
   },
 
@@ -39,7 +50,7 @@ const mutations = {
     const data = restore(BACKUP_KEY)
     if (!data) return
 
-    state.data = new Map(Object.entries(data.data))
+    state.data = data.data
   }
 }
 

@@ -44,14 +44,16 @@ const mutations = {
   },
 
   mergeTemplates(state, { workspaceId, templates }) {
-    state.templates[workspaceId] = {
-      ...templates,
-      ...(state.templates[workspaceId] || {})
+    state.templates = {
+      ...state.templates,
+      [workspaceId]: {
+        ...templates,
+        ...(state.templates[workspaceId])
+      }
     }
   },
 
   removeProto(state, { workspaceId, protoName }) {
-    console.log(workspaceId)
     state.protos[workspaceId] = state.protos[workspaceId].filter(proto => proto.proto !== protoName)
   }
 }

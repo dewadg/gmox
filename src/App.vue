@@ -49,10 +49,7 @@ export default {
 
     onMounted(() => {
       ipcRenderer.on(INCOMING_REQUEST, (_, args) => {
-        store.commit('requestLog/log', {
-          workspaceId: currentWorkspace.value.id,
-          ...args
-        })
+        store.commit('requestLog/log', { ...args })
       })
 
       ipcRenderer.on(REMOVE_PROTO, (_, { protoName }) => {
@@ -62,12 +59,12 @@ export default {
         })
       })
 
-      ipcRenderer.on(GRPC_SERVER_ON, () => {
-        store.commit('grpcServer/turnOn', { workspaceId: currentWorkspace.value.id })
+      ipcRenderer.on(GRPC_SERVER_ON, (_, { workspaceId }) => {
+        store.commit('grpcServer/turnOn', workspaceId)
       })
 
-      ipcRenderer.on(GRPC_SERVER_OFF, () => {
-        store.commit('grpcServer/turnOff', { workspaceId: currentWorkspace.value.id })
+      ipcRenderer.on(GRPC_SERVER_OFF, (_, { workspaceId }) => {
+        store.commit('grpcServer/turnOff', workspaceId)
       })
 
       restoreStores()

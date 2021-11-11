@@ -55,12 +55,14 @@ export default {
 
     const address = ref('127.0.0.1:50051')
 
-    const currentServerState = computed(() => store.getters['grpcServer/currentState'])
+    const currentWorkspace = computed(() => store.getters['workspace/current'])
+
+    const currentServerState = computed(() => store.getters['grpcServer/currentState'](currentWorkspace.value.id))
 
     const handleTurnOnServer = () => {
-      const stubs = new Map(Object.entries({ ...store.getters['protoStub/getStubMap'] }))
+      const stubs = new Map(Object.entries({ ...store.getters['protoStub/getStubMap'](currentWorkspace.value.id) }))
 
-      const protos = store.getters['protoParser/protos'].map(proto => ({
+      const protos = store.getters['protoParser/protos'](currentWorkspace.value.id).map(proto => ({
         filePath: [...proto.filePath],
         proto: proto.proto,
         services: proto.services.map(service => ({
@@ -72,13 +74,14 @@ export default {
       }))
 
       return store.dispatch('grpcServer/turnOn', {
+        workspaceId: currentWorkspace.value.id,
         address: address.value,
         protos,
         stubs
       })
     }
 
-    const handleTurnOffServer = () => store.dispatch('grpcServer/turnOff')
+    const handleTurnOffServer = () => store.dispatch('grpcServer/turnOff', { workspaceId: currentWorkspace.value.id })
 
     const handleRestartServer = async () => {
       await handleTurnOffServer()
