@@ -67,9 +67,6 @@ export default {
 @import '../../assets/styles/variables.scss';
 
 .g-request-logs {
-  position: fixed;
-  top: 76px;
-  right: 0;
   width: calc((100% - 1px - 250px) * 0.4);
   height: calc(100% - 76px);
 

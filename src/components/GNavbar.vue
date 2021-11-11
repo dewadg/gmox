@@ -101,9 +101,6 @@ export default {
 @import '../assets/styles/variables.scss';
 
 .g-navbar {
-  position: fixed;
-  top: 41px;
-  left: 0;
   width: 100%;
   display: flex;
   align-items: center;

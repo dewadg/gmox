@@ -2,9 +2,11 @@
   <div class="g-workspace">
     <GTabs />
     <GNavbar />
-    <GSidebar />
-    <GStubEditor />
-    <GRequestLog />
+    <div class="wrapper">
+      <GSidebar />
+      <GStubEditor />
+      <GRequestLog />
+    </div>
   </div>
 </template>
 
@@ -29,5 +31,12 @@ export default {
 <style lang="scss">
 .g-workspace {
   width: 100%;
+  overflow: hidden;
+
+  .wrapper {
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

@@ -139,11 +139,8 @@ export default {
 @import '../../assets/styles/variables.scss';
 
 .g-sidebar {
-  position: fixed;
-  top: 75px;
-  left: 0;
   width: 250px;
-  height: 100%;
+  height: calc(100% - 120px);
   border-right: 1px solid $accent;
 
   .g-sidebar-control {

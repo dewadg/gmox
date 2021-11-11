@@ -73,9 +73,6 @@ export default {
 }
 
 .g-stub-editor {
-  position: fixed;
-  top: 76px;
-  left: 251px;
   width: calc((100% - 1px - 250px) * 0.6);
   height: calc(100% - 76px);
   border-right: 1px solid $accent;
