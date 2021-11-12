@@ -3,10 +3,11 @@ const net = require('net')
 const { INCOMING_REQUEST } = require('../../constants/ipcEvents')
 const { loadProtoFile, flattenProto, normalizePackage } = require('./protoLoader')
 
-let serverInstance
+const servers = new Map()
 
 function start({
   win,
+  workspaceId,
   address = '127.0.0.1:50051',
   protos = [],
   stubs = new Map()
@@ -32,25 +33,28 @@ function start({
         }))
       })
       .then((loadedProtos) => {
-        if (serverInstance) {
-          serverInstance.forceShutdown()
+        if (servers.has(workspaceId)) {
+          servers.get(workspaceId).forceShutdown()
         }
 
-        serverInstance = new grpc.Server()
+        const server = new grpc.Server()
 
         mountStubsToServer({
           win,
-          server: serverInstance,
+          workspaceId,
+          server,
           protos: loadedProtos,
           stubs
         })
 
-        serverInstance.bindAsync(
+        server.bindAsync(
           address,
           grpc.ServerCredentials.createInsecure(),
           () => {
             try {
-              serverInstance.start()
+              server.start()
+
+              servers.set(workspaceId, server)
 
               resolve()
             } catch (error) {
@@ -63,14 +67,16 @@ function start({
     })
 }
 
-function stop() {
-  if (!serverInstance) return
+function stop({ workspaceId }) {
+  if (!servers.has(workspaceId)) return
 
-  serverInstance.forceShutdown()
+  servers.get(workspaceId).forceShutdown()
+  servers.delete(workspaceId)
 }
 
 function mountStubsToServer({
   win,
+  workspaceId,
   server,
   protos,
   stubs
@@ -103,6 +109,7 @@ function mountStubsToServer({
             callback(null, stub)
 
             const request = {
+              workspaceId,
               path: call.call.handler.path,
               type: call.call.handler.type,
               payload: call.request,
@@ -159,8 +166,17 @@ function isPortOccupied(port) {
   })
 }
 
+function stopAll() {
+  servers.forEach((server, key) => {
+    server.forceShutdown()
+
+    servers.delete(key)
+  })
+}
+
 module.exports = {
   start,
   stop,
-  isPortOccupied
+  isPortOccupied,
+  stopAll
 }

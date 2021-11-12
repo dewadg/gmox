@@ -1,19 +1,20 @@
 <template>
-  <div>
+  <div class="wrapper">
     <router-view/>
     <GAlert />
   </div>
 </template>
 
 <script>
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { ipcRenderer } from 'electron'
 import {
   GRPC_SERVER_OFF,
   GRPC_SERVER_ON,
   INCOMING_REQUEST,
-  REMOVE_PROTO
+  REMOVE_PROTO,
+  TURN_OFF_ALL_GRPC_SERVERS
 } from './constants/ipcEvents'
 import GAlert from './components/GAlert.vue'
 
@@ -24,6 +25,8 @@ export default {
 
   setup() {
     const store = useStore()
+
+    const currentWorkspace = computed(() => store.getters['workspace/current'])
 
     const restoreStores = () => {
       const mutations = Object.keys(store._mutations)
@@ -45,25 +48,37 @@ export default {
       }, 5000)
     }
 
+    const turnOffAllServers = () => {
+      setTimeout(() => {
+        ipcRenderer.invoke(TURN_OFF_ALL_GRPC_SERVERS, null)
+
+        store.commit('grpcServer/turnAllOff')
+      }, 1000)
+    }
+
     onMounted(() => {
       ipcRenderer.on(INCOMING_REQUEST, (_, args) => {
-        store.commit('requestLog/log', args)
+        store.commit('requestLog/log', { ...args })
       })
 
       ipcRenderer.on(REMOVE_PROTO, (_, { protoName }) => {
-        store.commit('protoParser/removeProto', { protoName })
+        store.commit('protoParser/removeProto', {
+          workspaceId: currentWorkspace.value.id,
+          protoName
+        })
       })
 
-      ipcRenderer.on(GRPC_SERVER_ON, () => {
-        store.commit('grpcServer/turnOn')
+      ipcRenderer.on(GRPC_SERVER_ON, (_, { workspaceId }) => {
+        store.commit('grpcServer/turnOn', workspaceId)
       })
 
-      ipcRenderer.on(GRPC_SERVER_OFF, () => {
-        store.commit('grpcServer/turnOff')
+      ipcRenderer.on(GRPC_SERVER_OFF, (_, { workspaceId }) => {
+        store.commit('grpcServer/turnOff', workspaceId)
       })
 
       restoreStores()
       backupStores()
+      turnOffAllServers()
     })
   }
 }
@@ -76,6 +91,15 @@ export default {
   font-size: 13px;
   letter-spacing: 0.025em;
   outline: none;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app,
+.wrapper {
+  height: 100%;
 }
 
 body {

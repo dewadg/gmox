@@ -94,7 +94,7 @@ async function parseProto(path) {
     .filter(keys => !keys.startsWith('google'))
     .map((pkg) => {
       const services = []
-      const templates = new Map()
+      const templates = {}
 
       for (const item of Object.keys(normalizedProto[pkg])) {
         if (typeof normalizedProto[pkg][item] === 'function') {
@@ -112,7 +112,7 @@ async function parseProto(path) {
         }
 
         if (typeof normalizedProto[pkg][item] === 'object') {
-          templates.set(item, JSON.stringify(buildTemplate(flattenedProto, pkg, item), null, 2))
+          templates[item] = JSON.stringify(buildTemplate(flattenedProto, pkg, item), null, 2)
         }
       }
 

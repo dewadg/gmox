@@ -5,14 +5,14 @@ const BACKUP_KEY = '__state_protoParser'
 
 const state = {
   isLoading: false,
-  protos: [],
-  templates: new Map()
+  protos: {},
+  templates: {}
 }
 
 const getters = {
-  protos: state => state.protos,
+  protos: state => workspaceId => state.protos[workspaceId] || [],
 
-  findTemplate: state => typeName => state.templates.get(typeName) || ''
+  findTemplate: state => (workspaceId, typeName) => (state.templates[workspaceId] || {})[typeName] || ''
 }
 
 const mutations = {
@@ -20,18 +20,18 @@ const mutations = {
     state.isLoading = true
   },
 
-  parseProtoDone(state, { protos }) {
+  parseProtoDone(state, { workspaceId, protos }) {
     state.isLoading = false
-    state.protos = [
+    state.protos[workspaceId] = [
       ...protos,
-      ...state.protos
+      ...(state.protos[workspaceId] || [])
     ]
   },
 
   backup(state) {
     backup(BACKUP_KEY, {
-      protos: state.protos.map(proto => ({ ...proto })),
-      templates: Object.fromEntries(state.templates)
+      protos: state.protos,
+      templates: state.templates
     })
   },
 
@@ -40,20 +40,26 @@ const mutations = {
     if (!data) return
 
     state.protos = data.protos
-    state.templates = new Map(Object.entries(data.templates))
+    state.templates = data.templates
   },
 
-  mergeTemplates(state, { templates }) {
-    state.templates = new Map([...state.templates, ...templates])
+  mergeTemplates(state, { workspaceId, templates }) {
+    state.templates = {
+      ...state.templates,
+      [workspaceId]: {
+        ...templates,
+        ...(state.templates[workspaceId])
+      }
+    }
   },
 
-  removeProto(state, { protoName }) {
-    state.protos = state.protos.filter(proto => proto.proto !== protoName)
+  removeProto(state, { workspaceId, protoName }) {
+    state.protos[workspaceId] = state.protos[workspaceId].filter(proto => proto.proto !== protoName)
   }
 }
 
 const actions = ({ ipcRenderer }) => ({
-  async parseProtoFile({ commit }, { path }) {
+  async parseProtoFile({ commit }, { workspaceId, path }) {
     commit('parseProtoStart')
 
     const protos = await ipcRenderer.invoke(PARSE_PROTO_FILE, { path })
@@ -61,10 +67,10 @@ const actions = ({ ipcRenderer }) => ({
     protos.forEach((proto) => {
       const { templates } = proto
 
-      commit('mergeTemplates', { templates })
+      commit('mergeTemplates', { workspaceId, templates })
     })
 
-    commit('parseProtoDone', { protos })
+    commit('parseProtoDone', { workspaceId, protos })
   }
 })
 

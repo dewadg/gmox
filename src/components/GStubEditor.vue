@@ -19,7 +19,12 @@ export default {
 
     const store = useStore()
 
-    const currentStubMethod = computed(() => store.getters['protoStub/getCurrentMethod'])
+    const currentWorkspace = computed(() => store.getters['workspace/current'])
+
+    const currentStubMethod = computed(() => currentWorkspace.value
+      ? store.getters['protoStub/getCurrentMethod'](currentWorkspace.value.id)
+      : { path: '' }
+    )
 
     const title = computed(() => currentStubMethod.value.path
       ? currentStubMethod.value.path
@@ -28,22 +33,32 @@ export default {
 
     const methodChosen = computed(() => Boolean(currentStubMethod.value.path))
 
+    watch(currentWorkspace, (value, previousValue) => {
+      if (!value) return
+
+      if (value.id === previousValue.id) return
+
+      editor.getModel().setValue('')
+    })
+
     const handleEditorContentChange = () => {
+      if (!currentWorkspace.value) return
+
       store.commit('protoStub/setStub', {
+        workspaceId: currentWorkspace.value.id,
         key: currentStubMethod.value.path,
         value: editor.getModel().getValue()
       })
     }
 
     // reload current key's stub during key switch
-    watch(currentStubMethod.value, (nextStubMethod) => {
-      if (!nextStubMethod.path) return
+    watch(currentStubMethod, (nextStub) => {
+      if (!nextStub.path) return
 
       if (editor) {
-        let stub = store.getters['protoStub/findByPath'](nextStubMethod.path)
-
+        let stub = store.getters['protoStub/findByPath'](currentWorkspace.value.id, nextStub.path)
         if (!stub) {
-          stub = store.getters['protoParser/findTemplate'](nextStubMethod.returnType)
+          stub = store.getters['protoParser/findTemplate'](currentWorkspace.value.id, nextStub.returnType)
         }
 
         editor.getModel().setValue(stub || '')
@@ -73,9 +88,6 @@ export default {
 }
 
 .g-stub-editor {
-  position: fixed;
-  top: 76px;
-  left: 251px;
   width: calc((100% - 1px - 250px) * 0.6);
   height: calc(100% - 76px);
   border-right: 1px solid $accent;

@@ -6,7 +6,8 @@ import {
   faEye,
   faPlayCircle,
   faStopCircle,
-  faRedo
+  faRedo,
+  faTimes
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faChevronDown)
@@ -16,3 +17,4 @@ library.add(faEye)
 library.add(faPlayCircle)
 library.add(faStopCircle)
 library.add(faRedo)
+library.add(faTimes)

@@ -1,6 +1,13 @@
 <template>
   <div class="g-navbar">
     <div class="g-navbar-left">
+      <span>{{ currentWorkspace.type }}</span>
+      <input
+        type="text"
+        class="workspace-name"
+        :value="currentWorkspace.name"
+        @blur="handleWorkspaceNameChange"
+      />
     </div>
     <input
       type="text"
@@ -55,12 +62,14 @@ export default {
 
     const address = ref('127.0.0.1:50051')
 
-    const currentServerState = computed(() => store.getters['grpcServer/currentState'])
+    const currentWorkspace = computed(() => store.getters['workspace/current'])
+
+    const currentServerState = computed(() => store.getters['grpcServer/currentState'](currentWorkspace.value.id))
 
     const handleTurnOnServer = () => {
-      const stubs = new Map(Object.entries({ ...store.getters['protoStub/getStubMap'] }))
+      const stubs = new Map(Object.entries({ ...store.getters['protoStub/getStubMap'](currentWorkspace.value.id) }))
 
-      const protos = store.getters['protoParser/protos'].map(proto => ({
+      const protos = store.getters['protoParser/protos'](currentWorkspace.value.id).map(proto => ({
         filePath: [...proto.filePath],
         proto: proto.proto,
         services: proto.services.map(service => ({
@@ -72,26 +81,36 @@ export default {
       }))
 
       return store.dispatch('grpcServer/turnOn', {
+        workspaceId: currentWorkspace.value.id,
         address: address.value,
         protos,
         stubs
       })
     }
 
-    const handleTurnOffServer = () => store.dispatch('grpcServer/turnOff')
+    const handleTurnOffServer = () => store.dispatch('grpcServer/turnOff', { workspaceId: currentWorkspace.value.id })
 
     const handleRestartServer = async () => {
       await handleTurnOffServer()
       await handleTurnOnServer()
     }
 
+    const handleWorkspaceNameChange = (event) => {
+      store.commit('workspace/rename', {
+        id: currentWorkspace.value.id,
+        name: event.target.value
+      })
+    }
+
     return {
       GRPC_SERVER_STATE,
       address,
+      currentWorkspace,
       currentServerState,
       handleTurnOnServer,
       handleTurnOffServer,
-      handleRestartServer
+      handleRestartServer,
+      handleWorkspaceNameChange
     }
   }
 }
@@ -101,9 +120,7 @@ export default {
 @import '../assets/styles/variables.scss';
 
 .g-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: relative;
   width: 100%;
   display: flex;
   align-items: center;
@@ -112,7 +129,10 @@ export default {
   border-bottom: 1px solid $accent;
 
   .input-port {
+    position: absolute;
+    left: calc(50% - 100px);
     background: $secondary;
+    width: 200px;
     height: 35px;
     border: none;
     border-radius: 5px;
@@ -120,6 +140,26 @@ export default {
     text-align: center;
     font-size: 1.1em;
     color: $font-secondary;
+  }
+
+  .g-navbar-left {
+    padding: 0 15px;
+
+    span {
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    .workspace-name {
+      display: block;
+      outline: none;
+      background: transparent;
+      border: none;
+      font-size: 1.2rem;
+      font-weight: normal;
+      margin: 0.2rem 0 0 0;
+      color: inherit;
+    }
   }
 
   .g-navbar-right {

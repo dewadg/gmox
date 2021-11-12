@@ -94,7 +94,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
+  padding: 7.5px 10px;
   color: $font-secondary;
 
   &:hover{

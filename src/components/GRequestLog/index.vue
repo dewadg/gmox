@@ -44,10 +44,12 @@ export default {
   setup() {
     const store = useStore()
 
-    const currentStubMethod = computed(() => store.getters['protoStub/getCurrentMethod'])
+    const currentWorkspace = computed(() => store.getters['workspace/current'])
+
+    const currentStubMethod = computed(() => store.getters['protoStub/getCurrentMethod'](currentWorkspace.value.id))
 
     const logs = computed(() => {
-      return store.getters['requestLog/getByPath'](currentStubMethod.value.path).map(log => ({
+      return store.getters['requestLog/getByPath'](currentWorkspace.value.id, currentStubMethod.value.path).map(log => ({
         type: log.type.toUpperCase(),
         payload: JSON.stringify(log.payload, null, 2),
         metadata: JSON.stringify(log.metadata.headers, null, 2),
@@ -67,9 +69,6 @@ export default {
 @import '../../assets/styles/variables.scss';
 
 .g-request-logs {
-  position: fixed;
-  top: 76px;
-  right: 0;
   width: calc((100% - 1px - 250px) * 0.4);
   height: calc(100% - 76px);
 

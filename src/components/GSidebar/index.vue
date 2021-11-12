@@ -12,41 +12,45 @@
         placeholder="Search method"
       />
     </div>
-    <GNavbarList>
-      <GNavbarListItem
-        v-for="proto in protos"
-        :key="proto.proto"
-        prefix-icon="P"
-        @right-click="handleRightClick(proto.proto)"
-      >
-        <template #after>
-          <GNavbarList class="second">
-            <GNavbarListItem
-              v-for="service in proto.services"
-              :key="service.service"
-              prefix-icon="S"
-            >
-              <template #after>
-                <GNavbarList class="third">
-                  <GNavbarListItem
-                    v-for="method in service.methods"
-                    :key="method.method"
-                    prefix-icon="M"
-                    @click="handleEdit({ protoName: proto.proto, serviceName: service.service, method })"
-                  >
-                    {{ method.method }}
-                  </GNavbarListItem>
-                </GNavbarList>
-              </template>
+    <div class="navbar-scrollable">
+      <div class="g-navbar-list-wrapper">
+        <GNavbarList>
+          <GNavbarListItem
+            v-for="proto in protos"
+            :key="proto.proto"
+            prefix-icon="P"
+            @right-click="handleRightClick(proto.proto)"
+          >
+            <template #after>
+              <GNavbarList class="second">
+                <GNavbarListItem
+                  v-for="service in proto.services"
+                  :key="service.service"
+                  prefix-icon="S"
+                >
+                  <template #after>
+                    <GNavbarList class="third">
+                      <GNavbarListItem
+                        v-for="method in service.methods"
+                        :key="method.method"
+                        prefix-icon="M"
+                        @click="handleEdit({ protoName: proto.proto, serviceName: service.service, method })"
+                      >
+                        {{ method.method }}
+                      </GNavbarListItem>
+                    </GNavbarList>
+                  </template>
 
-              {{ service.service }}
-            </GNavbarListItem>
-          </GNavbarList>
-        </template>
+                  {{ service.service }}
+                </GNavbarListItem>
+              </GNavbarList>
+            </template>
 
-        {{ proto.proto }}
-      </GNavbarListItem>
-    </GNavbarList>
+            {{ proto.proto }}
+          </GNavbarListItem>
+        </GNavbarList>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -73,12 +77,18 @@ export default {
 
     const keyword = ref('')
 
+    const currentWorkspace = computed(() => {
+      return store.getters['workspace/current']
+    })
+
     const protos = computed(() => {
-      if (keyword.value === '') return store.getters['protoParser/protos']
+      const protosFromStore = store.getters['protoParser/protos'](currentWorkspace.value.id)
+
+      if (keyword.value === '') return protosFromStore
 
       const filteredProtos = []
 
-      for (const proto of store.getters['protoParser/protos']) {
+      for (const proto of protosFromStore) {
         const services = []
 
         for (const service of proto.services) {
@@ -110,11 +120,12 @@ export default {
     const handleChooseProtoFile = async () => {
       const path = await ipcRenderer.invoke(CHOOSE_FILES)
 
-      await store.dispatch('protoParser/parseProtoFile', { path })
+      await store.dispatch('protoParser/parseProtoFile', { workspaceId: currentWorkspace.value.id, path })
     }
 
     const handleEdit = ({ protoName, serviceName, method }) => {
       store.commit('protoStub/setCurrentMethod', {
+        workspaceId: currentWorkspace.value.id,
         path: `/${protoName}.${serviceName}/${method.method}`,
         returnType: method.returnType
       })
@@ -139,14 +150,14 @@ export default {
 @import '../../assets/styles/variables.scss';
 
 .g-sidebar {
-  position: fixed;
-  top: 75px;
-  left: 0;
+  position: relative;
   width: 250px;
-  height: 100%;
+  height: calc(100% - 120px);
   border-right: 1px solid $accent;
 
   .g-sidebar-control {
+    position: relative;
+    z-index: 2;
     padding: 10px;
 
     button {
@@ -164,6 +175,22 @@ export default {
       text-align: center;
       font-size: 1em;
       color: $font-secondary;
+    }
+  }
+
+  .navbar-scrollable {
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    padding-top: 100px;
+    box-sizing: border-box;
+
+    .g-navbar-list-wrapper {
+      overflow-x: hidden;
+      overflow-y: scroll;
+      height: 100%;
     }
   }
 }
