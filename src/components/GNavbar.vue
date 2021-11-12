@@ -104,6 +104,7 @@ export default {
 @import '../assets/styles/variables.scss';
 
 .g-navbar {
+  position: relative;
   width: 100%;
   display: flex;
   align-items: center;
@@ -112,7 +113,10 @@ export default {
   border-bottom: 1px solid $accent;
 
   .input-port {
+    position: absolute;
+    left: calc(50% - 100px);
     background: $secondary;
+    width: 200px;
     height: 35px;
     border: none;
     border-radius: 5px;
