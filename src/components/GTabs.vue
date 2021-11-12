@@ -4,6 +4,9 @@
       v-for="workspace in workspaces"
       :key="workspace.id"
       @click="handleSetWorkspace(workspace.id)"
+      :class="{
+        active: currentWorkspace && workspace.id === currentWorkspace.id
+      }"
     >
       <span>{{ workspace.name }}</span>
       <div
@@ -16,10 +19,22 @@
         />
       </div>
     </li>
+    <li class="new-workspace">
+      <div
+        class="control"
+        @click="handleCreateNewWorkspace"
+      >
+        <FontAwesomeIcon
+          icon="plus"
+          size="sm"
+        />
+      </div>
+    </li>
   </ul>
 </template>
 
 <script>
+import { v4 as uuid } from 'uuid'
 import { computed } from '@vue/runtime-core'
 import { useStore } from 'vuex'
 
@@ -27,9 +42,9 @@ export default {
   setup () {
     const store = useStore()
 
-    const workspaces = computed(() => {
-      return store.getters['workspace/getList']
-    })
+    const workspaces = computed(() => store.getters['workspace/getList'])
+
+    const currentWorkspace = computed(() => store.getters['workspace/current'])
 
     // FIXME: fix workspace switch bug
     const handleCloseWorkspace = (id) => {
@@ -40,11 +55,24 @@ export default {
       store.commit('workspace/setWorkspace', id)
     }
 
+    const handleCreateNewWorkspace = () => {
+      const id = uuid()
+
+      store.commit('grpcServer/register', id)
+
+      store.commit('workspace/createWorkspace', {
+        id,
+        name: 'New Workspace'
+      })
+    }
+
     return {
       workspaces,
+      currentWorkspace,
 
       handleCloseWorkspace,
-      handleSetWorkspace
+      handleSetWorkspace,
+      handleCreateNewWorkspace
     }
   }
 }
@@ -66,6 +94,22 @@ export default {
     border-right: 1px solid $accent;
     cursor: pointer;
     color: $font-secondary;
+    box-sizing: border-box;
+
+    &.new-workspace {
+      padding: 1rem;
+
+      .control {
+        svg {
+          display: inline;
+        }
+      }
+    }
+
+    &.active {
+      padding-bottom: calc(1rem - 4px);
+      border-bottom: 4px solid $accent;
+    }
 
     &:hover {
       background: $secondary;

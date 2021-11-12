@@ -30,6 +30,10 @@ export default {
 
     const methodChosen = computed(() => Boolean(currentStubMethod.value.path))
 
+    watch(currentWorkspace, () => {
+      editor.getModel().setValue('')
+    })
+
     const handleEditorContentChange = () => {
       store.commit('protoStub/setStub', {
         workspaceId: currentWorkspace.value.id,
