@@ -1,6 +1,8 @@
 <template>
   <div class="g-navbar">
     <div class="g-navbar-left">
+      <span>{{ currentWorkspace.type }}</span>
+      <h2>{{ currentWorkspace.name }}</h2>
     </div>
     <input
       type="text"
@@ -91,6 +93,7 @@ export default {
     return {
       GRPC_SERVER_STATE,
       address,
+      currentWorkspace,
       currentServerState,
       handleTurnOnServer,
       handleTurnOffServer,
@@ -124,6 +127,21 @@ export default {
     text-align: center;
     font-size: 1.1em;
     color: $font-secondary;
+  }
+
+  .g-navbar-left {
+    padding: 0 15px;
+
+    span {
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      font-weight: normal;
+      margin: 0.2rem 0 0 0;
+    }
   }
 
   .g-navbar-right {

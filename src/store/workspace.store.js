@@ -19,7 +19,10 @@ const mutations = {
   createWorkspace (state, workspace) {
     state.data = {
       ...state.data,
-      [workspace.id]: workspace
+      [workspace.id]: {
+        ...workspace,
+        type: workspace.type ? workspace.type : 'SERVER'
+      }
     }
   },
 
