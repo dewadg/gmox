@@ -21,7 +21,10 @@ export default {
 
     const currentWorkspace = computed(() => store.getters['workspace/current'])
 
-    const currentStubMethod = computed(() => store.getters['protoStub/getCurrentMethod'](currentWorkspace.value.id))
+    const currentStubMethod = computed(() => currentWorkspace.value
+      ? store.getters['protoStub/getCurrentMethod'](currentWorkspace.value.id)
+      : { path: '' }
+    )
 
     const title = computed(() => currentStubMethod.value.path
       ? currentStubMethod.value.path
@@ -30,11 +33,15 @@ export default {
 
     const methodChosen = computed(() => Boolean(currentStubMethod.value.path))
 
-    watch(currentWorkspace, () => {
+    watch(currentWorkspace, (value) => {
+      if (!value) return
+
       editor.getModel().setValue('')
     })
 
     const handleEditorContentChange = () => {
+      if (!currentWorkspace.value) return
+
       store.commit('protoStub/setStub', {
         workspaceId: currentWorkspace.value.id,
         key: currentStubMethod.value.path,

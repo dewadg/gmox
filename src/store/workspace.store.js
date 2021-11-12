@@ -24,9 +24,10 @@ const mutations = {
   },
 
   closeWorkspace (state, id) {
-    delete state.data[id]
+    const copy = { ...state.data }
+    delete copy[id]
 
-    state.data = { ...state.data }
+    state.data = copy
   },
 
   setWorkspace (state, id) {

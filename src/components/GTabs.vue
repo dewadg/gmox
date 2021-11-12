@@ -11,7 +11,7 @@
       <span>{{ workspace.name }}</span>
       <div
         class="control"
-        @click="handleCloseWorkspace(workspace.id)"
+        @click.stop="handleCloseWorkspace(workspace.id)"
       >
         <FontAwesomeIcon
           icon="times"
@@ -46,9 +46,17 @@ export default {
 
     const currentWorkspace = computed(() => store.getters['workspace/current'])
 
-    // FIXME: fix workspace switch bug
     const handleCloseWorkspace = (id) => {
-      store.commit('workspace/closeWorkspace', id)
+      if (currentWorkspace.value.id !== id || workspaces.value.length === 1) return store.commit('workspace/closeWorkspace', id)
+
+      workspaces.value.forEach((workspace, index) => {
+        if (workspace.id !== id) return
+
+        console.log(workspaces.value[index - 1].id, id)
+
+        store.commit('workspace/setWorkspace', workspaces.value[index - 1].id)
+        store.commit('workspace/closeWorkspace', id)
+      })
     }
 
     const handleSetWorkspace = (id) => {
