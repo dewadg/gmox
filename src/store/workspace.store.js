@@ -50,6 +50,16 @@ const mutations = {
 
     state.data = data.data
     state.current = data.current
+  },
+
+  rename(state, { id, name }) {
+    state.data = {
+      ...state.data,
+      [id]: {
+        ...state.data[id],
+        name
+      }
+    }
   }
 }
 

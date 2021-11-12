@@ -2,7 +2,12 @@
   <div class="g-navbar">
     <div class="g-navbar-left">
       <span>{{ currentWorkspace.type }}</span>
-      <h2>{{ currentWorkspace.name }}</h2>
+      <input
+        type="text"
+        class="workspace-name"
+        :value="currentWorkspace.name"
+        @blur="handleWorkspaceNameChange"
+      />
     </div>
     <input
       type="text"
@@ -90,6 +95,13 @@ export default {
       await handleTurnOnServer()
     }
 
+    const handleWorkspaceNameChange = (event) => {
+      store.commit('workspace/rename', {
+        id: currentWorkspace.value.id,
+        name: event.target.value
+      })
+    }
+
     return {
       GRPC_SERVER_STATE,
       address,
@@ -97,7 +109,8 @@ export default {
       currentServerState,
       handleTurnOnServer,
       handleTurnOffServer,
-      handleRestartServer
+      handleRestartServer,
+      handleWorkspaceNameChange
     }
   }
 }
@@ -137,10 +150,15 @@ export default {
       font-weight: bold;
     }
 
-    h2 {
+    .workspace-name {
+      display: block;
+      outline: none;
+      background: transparent;
+      border: none;
       font-size: 1.2rem;
       font-weight: normal;
       margin: 0.2rem 0 0 0;
+      color: inherit;
     }
   }
 

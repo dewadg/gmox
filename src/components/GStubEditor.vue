@@ -33,8 +33,10 @@ export default {
 
     const methodChosen = computed(() => Boolean(currentStubMethod.value.path))
 
-    watch(currentWorkspace, (value) => {
+    watch(currentWorkspace, (value, previousValue) => {
       if (!value) return
+
+      if (value.id === previousValue.id) return
 
       editor.getModel().setValue('')
     })
