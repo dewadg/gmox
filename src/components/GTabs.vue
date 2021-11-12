@@ -19,11 +19,11 @@
         />
       </div>
     </li>
-    <li class="new-workspace">
-      <div
-        class="control"
-        @click="handleCreateNewWorkspace"
-      >
+    <li
+      class="new-workspace"
+      @click="handleCreateNewWorkspace"
+    >
+      <div class="control">
         <FontAwesomeIcon
           icon="plus"
           size="sm"
