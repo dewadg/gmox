@@ -70,7 +70,10 @@ function start({
 function stop({ workspaceId }) {
   if (!servers.has(workspaceId)) return
 
-  servers.get(workspaceId).forceShutdown()
+  const server = servers.get(workspaceId)
+  if (!server) return
+
+  server.forceShutdown()
   servers.delete(workspaceId)
 }
 
