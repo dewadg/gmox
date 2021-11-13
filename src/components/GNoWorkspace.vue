@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="!workspaceSet"
+    v-if="!isWorkspaceSet"
     class="g-no-workspace"
   >
     <span>No workspace yet. Creata a new one?</span>
@@ -11,9 +11,8 @@
 <script>
 
 import { useStore } from 'vuex'
-import { computed } from '@vue/runtime-core'
-import { v4 as uuid } from 'uuid'
 import GButton from '@/components/GButton'
+import useWorkspace from '@/composables/workspace'
 
 export default {
   components: {
@@ -23,24 +22,22 @@ export default {
   setup () {
     const store = useStore()
 
-    const workspaceSet = computed(() => {
-      store.getters['workspace/getCount'] > 0
-    })
+    const {
+      isWorkspaceSet,
+      createWorkspace,
+      setWorkspace
+    } = useWorkspace({ store })
 
     const handleCreateWorkspace = () => {
-      const id = uuid()
+      const id = createWorkspace()
 
-      store.commit('workspace/createWorkspace', {
-        id,
-        name: 'New Workspace'
-      })
+      setWorkspace(id)
 
-      store.commit('workspace/setWorkspace', id)
       store.commit('grpcServer/register', id)
     }
 
     return {
-      workspaceSet,
+      isWorkspaceSet,
 
       handleCreateWorkspace
     }

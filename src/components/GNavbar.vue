@@ -12,7 +12,11 @@
     <input
       type="text"
       class="input-port"
-      v-model="address"
+      :class="{
+        error: !isAddressValid
+      }"
+      :value="address"
+      @input="handleAddressChange"
     />
     <div class="g-navbar-right">
       <GButton
@@ -47,10 +51,11 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { GRPC_SERVER_STATE } from '../store/grpcServer.store'
 import GButton from './GButton.vue'
+import useWorkspace from '@/composables/workspace'
 
 export default {
   components: {
@@ -60,9 +65,15 @@ export default {
   setup() {
     const store = useStore()
 
-    const address = ref('127.0.0.1:50051')
+    const isAddressValid = ref(true)
 
-    const currentWorkspace = computed(() => store.getters['workspace/current'])
+    const {
+      currentWorkspace,
+      renameWorkspace,
+      changeWorkspaceAddress
+    } = useWorkspace({ store })
+
+    const address = computed(() => `${currentWorkspace.value.address}:${currentWorkspace.value.port}`)
 
     const currentServerState = computed(() => store.getters['grpcServer/currentState'](currentWorkspace.value.id))
 
@@ -96,21 +107,39 @@ export default {
     }
 
     const handleWorkspaceNameChange = (event) => {
-      store.commit('workspace/rename', {
+      renameWorkspace({
         id: currentWorkspace.value.id,
         name: event.target.value
       })
     }
 
+    const handleAddressChange = (event) => {
+      const [address = '', port = ''] = event.target.value.split(':')
+      if (!address || !port) {
+        isAddressValid.value = false
+        return
+      }
+
+      changeWorkspaceAddress({
+        id: currentWorkspace.value.id,
+        address,
+        port
+      })
+
+      isAddressValid.value = true
+    }
+
     return {
       GRPC_SERVER_STATE,
+      isAddressValid,
       address,
       currentWorkspace,
       currentServerState,
       handleTurnOnServer,
       handleTurnOffServer,
       handleRestartServer,
-      handleWorkspaceNameChange
+      handleWorkspaceNameChange,
+      handleAddressChange
     }
   }
 }
@@ -140,6 +169,10 @@ export default {
     text-align: center;
     font-size: 1.1em;
     color: $font-secondary;
+
+    &.error {
+      border: 2px solid #dc2626;
+    }
   }
 
   .g-navbar-left {
