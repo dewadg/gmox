@@ -22,12 +22,16 @@ export default ({ store }) => {
 
     store.commit('workspace/incrementLastAvailablePort')
 
+    store.commit('grpcServer/register', id)
+
     return id
   }
 
   const closeWorkspace = (id) => {
     if (currentWorkspace.value.id !== id || workspaces.value.length === 1) {
-      return store.commit('workspace/closeWorkspace', id)
+      store.commit('workspace/closeWorkspace', id)
+      store.commit('grpcServer/turnOff', id)
+      return
     }
 
     workspaces.value.forEach((workspace, index) => {
@@ -35,6 +39,7 @@ export default ({ store }) => {
 
       store.commit('workspace/setWorkspace', workspaces.value[index - 1].id)
       store.commit('workspace/closeWorkspace', id)
+      store.commit('grpcServer/turnOff', id)
     })
   }
 
