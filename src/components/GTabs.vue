@@ -34,45 +34,26 @@
 </template>
 
 <script>
-import { v4 as uuid } from 'uuid'
-import { computed } from '@vue/runtime-core'
 import { useStore } from 'vuex'
+import useWorkspace from '@/composables/workspace'
 
 export default {
   setup () {
     const store = useStore()
 
-    const workspaces = computed(() => store.getters['workspace/getList'])
+    const {
+      workspaces,
+      currentWorkspace,
+      createWorkspace,
+      closeWorkspace,
+      setWorkspace
+    } = useWorkspace({ store })
 
-    const currentWorkspace = computed(() => store.getters['workspace/current'])
+    const handleCloseWorkspace = (id) => closeWorkspace(id)
 
-    const handleCloseWorkspace = (id) => {
-      if (currentWorkspace.value.id !== id || workspaces.value.length === 1) return store.commit('workspace/closeWorkspace', id)
+    const handleSetWorkspace = (id) => setWorkspace(id)
 
-      workspaces.value.forEach((workspace, index) => {
-        if (workspace.id !== id) return
-
-        console.log(workspaces.value[index - 1].id, id)
-
-        store.commit('workspace/setWorkspace', workspaces.value[index - 1].id)
-        store.commit('workspace/closeWorkspace', id)
-      })
-    }
-
-    const handleSetWorkspace = (id) => {
-      store.commit('workspace/setWorkspace', id)
-    }
-
-    const handleCreateNewWorkspace = () => {
-      const id = uuid()
-
-      store.commit('grpcServer/register', id)
-
-      store.commit('workspace/createWorkspace', {
-        id,
-        name: 'New Workspace'
-      })
-    }
+    const handleCreateNewWorkspace = () => createWorkspace()
 
     return {
       workspaces,

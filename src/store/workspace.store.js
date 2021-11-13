@@ -4,7 +4,9 @@ const BACKUP_KEY = '__state_workspace'
 
 const state = {
   data: {},
-  current: null
+  current: null,
+  lastAvailablePort: 50051,
+  occupiedPorts: {}
 }
 
 const getters = {
@@ -12,21 +14,36 @@ const getters = {
 
   getList: state => Object.values(state.data),
 
-  current: state => state.current ? state.data[state.current] : null
+  current: state => state.current ? state.data[state.current] : null,
+
+  lastAvailablePort: state => state.lastAvailablePort
 }
 
 const mutations = {
-  createWorkspace (state, workspace) {
+  createWorkspace (state, { id, name, type = 'SERVER', address = '127.0.0.1', port = 50051 }) {
     state.data = {
       ...state.data,
-      [workspace.id]: {
-        ...workspace,
-        type: workspace.type ? workspace.type : 'SERVER'
+      [id]: {
+        id,
+        name,
+        address,
+        port,
+        type
       }
+    }
+
+    state.occupiedPorts = {
+      ...state.occupiedPorts,
+      [port]: true
     }
   },
 
   closeWorkspace (state, id) {
+    state.occupiedPorts = {
+      ...state.occupiedPorts,
+      [state.data[id].port]: false
+    }
+
     const copy = { ...state.data }
     delete copy[id]
 
@@ -58,6 +75,21 @@ const mutations = {
       [id]: {
         ...state.data[id],
         name
+      }
+    }
+  },
+
+  incrementLastAvailablePort(state) {
+    state.lastAvailablePort += 1
+  },
+
+  changeAddress(state, { id, address, port }) {
+    state.data = {
+      ...state.data,
+      [id]: {
+        ...state.data[id],
+        address,
+        port
       }
     }
   }
