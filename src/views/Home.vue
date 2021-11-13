@@ -1,17 +1,18 @@
 <template>
   <div
     class="home"
-    :class="{ centered: !workspaceSet }"
+    :class="{ centered: !isWorkspaceSet }"
   >
-    <GNoWorkspace v-if="!workspaceSet" />
+    <GNoWorkspace v-if="!isWorkspaceSet" />
     <GWorkspace v-else />
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { useStore } from 'vuex'
 import GNoWorkspace from '@/components/GNoWorkspace'
 import GWorkspace from '@/components/GWorkspace'
+import useWorkspace from '@/composables/workspace'
 
 export default {
   name: 'Home',
@@ -21,14 +22,12 @@ export default {
     GWorkspace
   },
 
-  computed: {
-    ...mapGetters({
-      workspaceCount: 'workspace/getCount'
-    }),
+  setup() {
+    const store = useStore()
 
-    workspaceSet () {
-      return this.workspaceCount > 0
-    }
+    const { isWorkspaceSet } = useWorkspace({ store })
+
+    return { isWorkspaceSet }
   }
 }
 </script>

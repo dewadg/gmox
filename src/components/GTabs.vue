@@ -38,7 +38,7 @@ import { useStore } from 'vuex'
 import useWorkspace from '@/composables/workspace'
 
 export default {
-  setup () {
+  setup() {
     const store = useStore()
 
     const {

@@ -18,7 +18,7 @@ const getters = {
 }
 
 const mutations = {
-  setLoading (state, isLoading) {
+  setLoading(state, isLoading) {
     state.isLoading = isLoading
   },
 

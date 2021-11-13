@@ -20,7 +20,7 @@ const getters = {
 }
 
 const mutations = {
-  createWorkspace (state, { id, name, type = 'SERVER', address = '127.0.0.1', port = 50051 }) {
+  createWorkspace(state, { id, name, type = 'SERVER', address = '127.0.0.1', port = 50051 }) {
     state.data = {
       ...state.data,
       [id]: {
@@ -38,7 +38,7 @@ const mutations = {
     }
   },
 
-  closeWorkspace (state, id) {
+  closeWorkspace(state, id) {
     state.occupiedPorts = {
       ...state.occupiedPorts,
       [state.data[id].port]: false
@@ -50,7 +50,7 @@ const mutations = {
     state.data = copy
   },
 
-  setWorkspace (state, id) {
+  setWorkspace(state, id) {
     state.current = id
   },
 

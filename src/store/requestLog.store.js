@@ -11,7 +11,7 @@ const getters = {
 }
 
 const mutations = {
-  log (state, request) {
+  log(state, request) {
     const logs = [
       request,
       ...((state.data[request.workspaceId] || {})[request.path] || [])

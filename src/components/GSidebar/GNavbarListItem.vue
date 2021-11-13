@@ -49,7 +49,7 @@ export default {
     'right-click'
   ],
 
-  setup(props, { slots, emit }) {
+  setup(_, { slots, emit }) {
     const isToggled = ref(false)
 
     const hasAfter = computed(() => Boolean(slots.after))

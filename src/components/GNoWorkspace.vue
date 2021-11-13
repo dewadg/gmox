@@ -19,7 +19,7 @@ export default {
     GButton
   },
 
-  setup () {
+  setup() {
     const store = useStore()
 
     const {
