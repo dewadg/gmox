@@ -45,7 +45,7 @@
     "monaco-editor-webpack-plugin": "^4.1.1",
     "sass": "^1.37.0",
     "sass-loader": "^10",
-    "vue-cli-plugin-electron-builder": "~2.1.1"
+    "vue-cli-plugin-electron-builder": "https://github.com/dewadg/vue-cli-plugin-electron-builder#2.1.1-eb-23.0.2"
   },
   "eslintConfig": {
     "root": true,
