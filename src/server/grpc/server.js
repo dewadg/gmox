@@ -109,7 +109,11 @@ function mountStubsToServer({
           carry[method.originalName] = (call, callback) => {
             const stub = JSON.parse(stubs.get(method.path).split('\n').join(''))
 
-            callback(null, stub)
+            if (stub.error) {
+              callback(stub)
+            } else {
+              callback(null, stub)
+            }
 
             const request = {
               workspaceId,
