@@ -1,4 +1,4 @@
-const { GRPC_SERVER_ON, GRPC_SERVER_OFF, IPC_MAIN_ERROR } = require('../../constants/ipcEvents')
+const { GRPC_SERVER_ON, GRPC_SERVER_OFF, IPC_MAIN_ERROR } = require('../../shared/constants/ipcEvents')
 const { start, stop, stopAll } = require('../grpc/server')
 
 function handleTurnOnGrpcServer({ win }) {

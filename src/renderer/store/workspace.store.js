@@ -1,4 +1,4 @@
-import { backup, restore } from '../services/storage/localStorage'
+import { backup, restore } from '@/renderer/services/storage/localStorage'
 
 const BACKUP_KEY = '__state_workspace'
 

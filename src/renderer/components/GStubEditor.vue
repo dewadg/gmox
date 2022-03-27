@@ -11,7 +11,7 @@
 import { computed, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import * as monaco from 'monaco-editor'
-import { MONACO_EDITOR_OPTIONS } from '../constants/monaco'
+import { MONACO_EDITOR_OPTIONS } from '@/renderer/constants/monaco'
 
 export default {
   setup() {

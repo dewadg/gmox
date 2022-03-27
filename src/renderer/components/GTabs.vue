@@ -35,7 +35,7 @@
 
 <script>
 import { useStore } from 'vuex'
-import useWorkspace from '@/composables/workspace'
+import useWorkspace from '../composables/workspace'
 
 export default {
   setup() {
@@ -68,7 +68,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/assets/styles/variables.scss';
+@import '../assets/styles/variables.scss';
 
 .g-tabs {
   display: flex;

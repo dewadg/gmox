@@ -11,8 +11,8 @@
 <script>
 
 import { useStore } from 'vuex'
-import GButton from '@/components/GButton'
-import useWorkspace from '@/composables/workspace'
+import GButton from './GButton'
+import useWorkspace from '@/renderer/composables/workspace'
 
 export default {
   components: {
