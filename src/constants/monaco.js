@@ -9,7 +9,7 @@ export const MONACO_EDITOR_OPTIONS = {
     vertical: 'hidden',
     horizontal: 'hidden'
   },
-  scrollBeyondLastLine: false,
+  scrollBeyondLastLine: true,
   fontFamily: 'monospace',
   fontSize: '15px',
   automaticLayout: true,
