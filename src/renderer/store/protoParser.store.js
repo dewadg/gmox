@@ -1,5 +1,5 @@
-import { backup, restore } from '../services/storage/localStorage'
-import { PARSE_PROTO_FILE } from '../constants/ipcEvents'
+import { backup, restore } from '@/renderer/services/storage/localStorage'
+import { PARSE_PROTO_FILE } from '@/shared/constants/ipcEvents'
 
 const BACKUP_KEY = '__state_protoParser'
 

@@ -58,7 +58,7 @@
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { ipcRenderer } from 'electron'
-import { CHOOSE_FILES, NAVBAR_LIST_ITEM_CLICK } from '../../constants/ipcEvents'
+import { CHOOSE_FILES, NAVBAR_LIST_ITEM_CLICK } from '@/shared/constants/ipcEvents'
 import GNavbarList from './GNavbarList.vue'
 import GNavbarListItem from './GNavbarListItem.vue'
 import GButton from '../GButton.vue'

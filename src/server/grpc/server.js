@@ -1,6 +1,6 @@
 const grpc = require('@grpc/grpc-js')
 const net = require('net')
-const { INCOMING_REQUEST } = require('../../constants/ipcEvents')
+const { INCOMING_REQUEST } = require('../../shared/constants/ipcEvents')
 const { loadProtoFile, flattenProto, normalizePackage } = require('./protoLoader')
 
 const servers = new Map()

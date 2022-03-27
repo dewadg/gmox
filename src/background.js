@@ -11,11 +11,11 @@ import {
   TURN_OFF_ALL_GRPC_SERVERS,
   TURN_OFF_GRPC_SERVER,
   TURN_ON_GRPC_SERVER
-} from './constants/ipcEvents'
-import { handleParseProtoFile } from './services/ipc/protoLoader'
-import { handleChooseFiles } from './services/ipc/fileChooser'
-import { handleTurnOffAllGrpcServers, handleTurnOffGrpcServer, handleTurnOnGrpcServer } from './services/ipc/grpcServer'
-import { handleNavbarListItemClick } from './services/ipc/contextMenus'
+} from '@/shared/constants/ipcEvents'
+import { handleParseProtoFile } from '@/server/ipc/protoLoader'
+import { handleChooseFiles } from '@/server/ipc/fileChooser'
+import { handleTurnOffAllGrpcServers, handleTurnOffGrpcServer, handleTurnOnGrpcServer } from '@/server/ipc/grpcServer'
+import { handleNavbarListItemClick } from '@/server/ipc/contextMenus'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 

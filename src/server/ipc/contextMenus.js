@@ -1,5 +1,5 @@
 const { Menu, BrowserWindow } = require('electron')
-const { REMOVE_PROTO } = require('../../constants/ipcEvents')
+const { REMOVE_PROTO } = require('../../shared/constants/ipcEvents')
 
 function handleNavbarListItemClick() {
   return (event, args) => {

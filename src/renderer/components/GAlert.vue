@@ -12,7 +12,7 @@
 <script>
 import { onMounted, ref } from 'vue'
 import { ipcRenderer } from 'electron'
-import { IPC_MAIN_ERROR } from '../constants/ipcEvents'
+import { IPC_MAIN_ERROR } from '@/shared/constants/ipcEvents'
 
 export default {
   setup() {

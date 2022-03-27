@@ -15,8 +15,8 @@ import {
   INCOMING_REQUEST,
   REMOVE_PROTO,
   TURN_OFF_ALL_GRPC_SERVERS
-} from './constants/ipcEvents'
-import GAlert from './components/GAlert.vue'
+} from '@/shared/constants/ipcEvents'
+import GAlert from '@/renderer/components/GAlert.vue'
 
 export default {
   components: {

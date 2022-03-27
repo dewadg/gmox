@@ -1,5 +1,5 @@
-import { backup, restore } from '../services/storage/localStorage'
-import { TURN_OFF_GRPC_SERVER, TURN_ON_GRPC_SERVER } from '../constants/ipcEvents'
+import { backup, restore } from '@/renderer/services/storage/localStorage'
+import { TURN_OFF_GRPC_SERVER, TURN_ON_GRPC_SERVER } from '@/shared/constants/ipcEvents'
 
 export const GRPC_SERVER_STATE = {
   ON: 'ON',

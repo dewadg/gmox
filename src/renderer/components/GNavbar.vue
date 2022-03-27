@@ -55,7 +55,7 @@ import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { GRPC_SERVER_STATE } from '../store/grpcServer.store'
 import GButton from './GButton.vue'
-import useWorkspace from '@/composables/workspace'
+import useWorkspace from '@/renderer/composables/workspace'
 
 export default {
   components: {

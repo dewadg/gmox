@@ -10,9 +10,9 @@
 
 <script>
 import { useStore } from 'vuex'
-import GNoWorkspace from '@/components/GNoWorkspace'
-import GWorkspace from '@/components/GWorkspace'
-import useWorkspace from '@/composables/workspace'
+import GNoWorkspace from '../components/GNoWorkspace'
+import GWorkspace from '../components/GWorkspace'
+import useWorkspace from '../composables/workspace'
 
 export default {
   name: 'Home',

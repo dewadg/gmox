@@ -11,11 +11,11 @@
 </template>
 
 <script>
-import GTabs from '@/components/GTabs'
-import GNavbar from '@/components/GNavbar'
-import GSidebar from '@/components/GSidebar'
-import GStubEditor from '@/components/GStubEditor'
-import GRequestLog from '@/components/GRequestLog'
+import GTabs from './GTabs'
+import GNavbar from './GNavbar'
+import GSidebar from './GSidebar'
+import GStubEditor from './GStubEditor'
+import GRequestLog from './GRequestLog'
 
 export default {
   components: {
