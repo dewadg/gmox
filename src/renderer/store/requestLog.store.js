@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid'
 import { backup, restore } from '@/renderer/services/storage/localStorage'
 
 const BACKUP_KEY = '__state_requestLog'
@@ -13,7 +14,11 @@ const getters = {
 const mutations = {
   log(state, request) {
     const logs = [
-      request,
+      {
+        id: uuid(),
+        ...request,
+        collapsed: false
+      },
       ...((state.data[request.workspaceId] || {})[request.path] || [])
     ]
 

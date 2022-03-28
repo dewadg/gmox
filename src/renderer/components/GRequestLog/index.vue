@@ -4,26 +4,7 @@
       <span>{{ title }}</span>
     </div>
     <div class="g-request-logs-list-container">
-      <GRequestLogList>
-        <GRequestLogListItem
-          v-for="log in logs"
-          :key="log"
-        >
-          <template #right>
-            {{ log.timestamp }}
-          </template>
-
-          <template #payload>
-            <pre>{{ log.payload }}</pre>
-          </template>
-
-          <template #metadata>
-            <pre>{{ log.metadata }}</pre>
-          </template>
-
-          {{ log.type }}
-        </GRequestLogListItem>
-      </GRequestLogList>
+      <GRequestLogList :items="logs" />
     </div>
   </div>
 </template>
@@ -33,14 +14,12 @@ import { computed } from 'vue'
 import { useStore } from 'vuex'
 import day from 'dayjs'
 import GRequestLogList from './GRequestLogList.vue'
-import GRequestLogListItem from './GRequestLogListItem.vue'
 
 export default {
   name: 'GRequestLog',
 
   components: {
-    GRequestLogList,
-    GRequestLogListItem
+    GRequestLogList
   },
 
   setup() {
@@ -52,6 +31,7 @@ export default {
 
     const logs = computed(() => {
       return store.getters['requestLog/getByPath'](currentWorkspace.value.id, currentStubMethod.value.path).map(log => ({
+        id: log.id,
         type: log.type.toUpperCase(),
         payload: JSON.stringify(log.payload, null, 2),
         metadata: JSON.stringify(log.metadata.headers, null, 2),
