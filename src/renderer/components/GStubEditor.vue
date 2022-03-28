@@ -83,8 +83,9 @@ export default {
 
 .g-stub-editor {
   width: calc((100% - 1px - 250px) * 0.6);
-  height: calc(100% - 76px);
+  height: 100%;
   border-right: 1px solid $accent;
+  overflow-y: hidden;
 
   .g-stub-editor-title {
     display: flex;

@@ -3,26 +3,28 @@
     <div class="g-request-logs-title">
       <span>{{ title }}</span>
     </div>
-    <GRequestLogList>
-      <GRequestLogListItem
-        v-for="log in logs"
-        :key="log"
-      >
-        <template #right>
-          {{ log.timestamp }}
-        </template>
+    <div class="g-request-logs-list-container">
+      <GRequestLogList>
+        <GRequestLogListItem
+          v-for="log in logs"
+          :key="log"
+        >
+          <template #right>
+            {{ log.timestamp }}
+          </template>
 
-        <template #payload>
-          <pre>{{ log.payload }}</pre>
-        </template>
+          <template #payload>
+            <pre>{{ log.payload }}</pre>
+          </template>
 
-        <template #metadata>
-          <pre>{{ log.metadata }}</pre>
-        </template>
+          <template #metadata>
+            <pre>{{ log.metadata }}</pre>
+          </template>
 
-        {{ log.type }}
-      </GRequestLogListItem>
-    </GRequestLogList>
+          {{ log.type }}
+        </GRequestLogListItem>
+      </GRequestLogList>
+    </div>
   </div>
 </template>
 
@@ -69,10 +71,12 @@ export default {
 @import '../../assets/styles/variables.scss';
 
 .g-request-logs {
+  position: relative;
   width: calc((100% - 1px - 250px) * 0.4);
-  height: calc(100% - 76px);
 
   .g-request-logs-title {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: center;
     padding: 15px;
@@ -82,6 +86,16 @@ export default {
     .g-alphabet-icon {
       margin-right: 15px;
     }
+  }
+
+  .g-request-logs-list-container {
+    position: absolute;
+    z-index: 1;
+    height: 100%;
+    top: 0;
+    width: 100%;
+    padding-top: 47px;
+    box-sizing: border-box;
   }
 }
 </style>
