@@ -38,7 +38,7 @@
 </template>
 
 <script setup>
-import { defineProps, reactive } from 'vue'
+import { reactive } from 'vue'
 import GAlphabetIcon from '../GAlphabetIcon.vue'
 
 defineProps({
