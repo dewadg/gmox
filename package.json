@@ -51,7 +51,8 @@
     "root": true,
     "env": {
       "node": true,
-      "jest/globals": true
+      "jest/globals": true,
+      "vue/setup-compiler-macros": true
     },
     "extends": [
       "plugin:vue/vue3-essential",
@@ -60,7 +61,9 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {},
+    "rules": {
+      "vue/multi-word-component-names": "off"
+    },
     "plugins": [
       "jest"
     ]
