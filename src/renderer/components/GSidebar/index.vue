@@ -152,7 +152,6 @@ export default {
 .g-sidebar {
   position: relative;
   width: 250px;
-  height: calc(100% - 120px);
   border-right: 1px solid $accent;
 
   .g-sidebar-control {

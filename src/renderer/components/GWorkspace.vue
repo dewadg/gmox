@@ -31,12 +31,12 @@ export default {
 <style lang="scss">
 .g-workspace {
   width: 100%;
-  overflow: hidden;
+  height: 100%;
 
   .wrapper {
     display: flex;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 120px);
   }
 }
 </style>
