@@ -26,7 +26,7 @@ const currentStubMethod = computed(() => currentWorkspace.value
 
 const title = computed(() => currentStubMethod.value.path
   ? currentStubMethod.value.path
-  : 'No service method currently opened. You can import proto in left sidebar'
+  : 'No method is chosen'
 )
 
 // reload current key's stub during key switch
