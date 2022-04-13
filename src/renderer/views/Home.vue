@@ -21,6 +21,7 @@ const { isWorkspaceSet } = useWorkspace({ store })
 
 <style lang="scss">
 .home {
+  display: flex;
   width: 100%;
   height: 100%;
 
