@@ -1,4 +1,5 @@
 import { backup, restore } from '@/renderer/services/storage/localStorage'
+import { cloneDeep } from 'lodash/lang'
 
 const BACKUP_KEY = '__state_protoStub'
 
@@ -9,7 +10,7 @@ const state = {
 }
 
 const getters = {
-  getStubMap: state => workspaceId => state.data[workspaceId] || {},
+  getStubMap: state => workspaceId => state.data[workspaceId] ? cloneDeep(state.data[workspaceId]) : {},
 
   getCurrentMethod: state => workspaceId => state.currentMethod[workspaceId] || {
     path: '',

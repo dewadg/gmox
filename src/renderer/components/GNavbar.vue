@@ -72,7 +72,7 @@ const address = computed(() => `${currentWorkspace.value.address}:${currentWorks
 const currentServerState = computed(() => store.getters['grpcServer/currentState'](currentWorkspace.value.id))
 
 const handleTurnOnServer = () => {
-  const stubs = new Map(Object.entries({ ...store.getters['protoStub/getStubMap'](currentWorkspace.value.id) }))
+  const stubs = new Map(Object.entries(store.getters['protoStub/getStubMap'](currentWorkspace.value.id)))
 
   const protos = store.getters['protoParser/protos'](currentWorkspace.value.id)
 
