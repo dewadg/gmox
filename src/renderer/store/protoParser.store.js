@@ -1,5 +1,6 @@
 import { backup, restore } from '@/renderer/services/storage/localStorage'
 import { PARSE_PROTO_FILE } from '@/shared/constants/ipcEvents'
+import { cloneDeep } from 'lodash/lang'
 
 const BACKUP_KEY = '__state_protoParser'
 
@@ -10,7 +11,7 @@ const state = {
 }
 
 const getters = {
-  protos: state => workspaceId => state.protos[workspaceId] || [],
+  protos: state => workspaceId => state.protos[workspaceId] ? cloneDeep(state.protos[workspaceId]) : [],
 
   findTemplate: state => (workspaceId, typeName) => (state.templates[workspaceId] || {})[typeName] || ''
 }

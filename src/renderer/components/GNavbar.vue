@@ -74,16 +74,7 @@ const currentServerState = computed(() => store.getters['grpcServer/currentState
 const handleTurnOnServer = () => {
   const stubs = new Map(Object.entries({ ...store.getters['protoStub/getStubMap'](currentWorkspace.value.id) }))
 
-  const protos = store.getters['protoParser/protos'](currentWorkspace.value.id).map(proto => ({
-    filePath: [...proto.filePath],
-    proto: proto.proto,
-    services: proto.services.map(service => ({
-      ...service,
-      methods: service.methods.map(method => ({
-        ...method
-      }))
-    }))
-  }))
+  const protos = store.getters['protoParser/protos'](currentWorkspace.value.id)
 
   return store.dispatch('grpcServer/turnOn', {
     workspaceId: currentWorkspace.value.id,
