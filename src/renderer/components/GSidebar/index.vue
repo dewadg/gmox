@@ -67,9 +67,7 @@ const store = useStore()
 
 const keyword = ref('')
 
-const currentWorkspace = computed(() => {
-  return store.getters['workspace/current']
-})
+const currentWorkspace = computed(() => store.getters['workspace/current'])
 
 const protos = computed(() => {
   const protosFromStore = store.getters['protoParser/protos'](currentWorkspace.value.id)
@@ -113,13 +111,12 @@ const handleChooseProtoFile = async () => {
   await store.dispatch('protoParser/parseProtoFile', { workspaceId: currentWorkspace.value.id, path })
 }
 
-const handleEdit = ({ protoName, serviceName, method }) => {
+const handleEdit = ({ protoName, serviceName, method }) =>
   store.commit('protoStub/setCurrentMethod', {
     workspaceId: currentWorkspace.value.id,
     path: `/${protoName}.${serviceName}/${method.method}`,
     returnType: method.returnType
   })
-}
 
 const handleRightClick = (protoName) => {
   ipcRenderer.send(NAVBAR_LIST_ITEM_CLICK, { protoName })
