@@ -22,6 +22,7 @@
     "@grpc/proto-loader": "^0.6.4",
     "core-js": "^3.6.5",
     "dayjs": "^1.10.6",
+    "lodash": "^4.17.21",
     "monaco-editor": "^0.26.1",
     "uuid": "^8.3.2",
     "vue": "3.2.31",
