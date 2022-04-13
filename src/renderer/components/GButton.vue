@@ -12,23 +12,21 @@
   </button>
 </template>
 
-<script>
-export default {
-  props: {
-    inline: {
-      type: Boolean,
-      default: false
-    },
-    small: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    }
+<script setup>
+defineProps({
+  inline: {
+    type: Boolean,
+    default: false
+  },
+  small: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
   }
-}
+})
 </script>
 
 <style lang="scss">

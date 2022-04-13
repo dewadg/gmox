@@ -8,28 +8,15 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { useStore } from 'vuex'
 import GNoWorkspace from '../components/GNoWorkspace'
 import GWorkspace from '../components/GWorkspace'
 import useWorkspace from '../composables/workspace'
 
-export default {
-  name: 'Home',
+const store = useStore()
 
-  components: {
-    GNoWorkspace,
-    GWorkspace
-  },
-
-  setup() {
-    const store = useStore()
-
-    const { isWorkspaceSet } = useWorkspace({ store })
-
-    return { isWorkspaceSet }
-  }
-}
+const { isWorkspaceSet } = useWorkspace({ store })
 </script>
 
 <style lang="scss">

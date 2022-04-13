@@ -1,7 +1,7 @@
 <template>
   <div class="g-request-logs">
     <div class="g-request-logs-title">
-      <span>{{ title }}</span>
+      <span>Request Logs</span>
     </div>
     <div class="g-request-logs-list-container">
       <GRequestLogList :items="logs" />
@@ -9,42 +9,27 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import day from 'dayjs'
 import GRequestLogList from './GRequestLogList.vue'
 
-export default {
-  name: 'GRequestLog',
+const store = useStore()
 
-  components: {
-    GRequestLogList
-  },
+const currentWorkspace = computed(() => store.getters['workspace/current'])
 
-  setup() {
-    const store = useStore()
+const currentStubMethod = computed(() => store.getters['protoStub/getCurrentMethod'](currentWorkspace.value.id))
 
-    const currentWorkspace = computed(() => store.getters['workspace/current'])
-
-    const currentStubMethod = computed(() => store.getters['protoStub/getCurrentMethod'](currentWorkspace.value.id))
-
-    const logs = computed(() => {
-      return store.getters['requestLog/getByPath'](currentWorkspace.value.id, currentStubMethod.value.path).map(log => ({
-        id: log.id,
-        type: log.type.toUpperCase(),
-        payload: JSON.stringify(log.payload, null, 2),
-        metadata: JSON.stringify(log.metadata.headers, null, 2),
-        timestamp: day(log.timestamp).format('YYYY-MM-DD HH:mm:ss')
-      }))
-    })
-
-    return {
-      title: 'Request Logs',
-      logs
-    }
-  }
-}
+const logs = computed(() =>
+  store.getters['requestLog/getByPath'](currentWorkspace.value.id, currentStubMethod.value.path).map(log => ({
+    id: log.id,
+    type: log.type.toUpperCase(),
+    payload: JSON.stringify(log.payload, null, 2),
+    metadata: JSON.stringify(log.metadata.headers, null, 2),
+    timestamp: day(log.timestamp).format('YYYY-MM-DD HH:mm:ss')
+  }))
+)
 </script>
 
 <style lang="scss">

@@ -54,7 +54,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { ipcRenderer } from 'electron'
@@ -63,86 +63,66 @@ import GNavbarList from './GNavbarList.vue'
 import GNavbarListItem from './GNavbarListItem.vue'
 import GButton from '../GButton.vue'
 
-export default {
-  name: 'GSidebar',
+const store = useStore()
 
-  components: {
-    GNavbarList,
-    GNavbarListItem,
-    GButton
-  },
+const keyword = ref('')
 
-  setup() {
-    const store = useStore()
+const currentWorkspace = computed(() => {
+  return store.getters['workspace/current']
+})
 
-    const keyword = ref('')
+const protos = computed(() => {
+  const protosFromStore = store.getters['protoParser/protos'](currentWorkspace.value.id)
 
-    const currentWorkspace = computed(() => {
-      return store.getters['workspace/current']
-    })
+  if (keyword.value === '') return protosFromStore
 
-    const protos = computed(() => {
-      const protosFromStore = store.getters['protoParser/protos'](currentWorkspace.value.id)
+  const filteredProtos = []
 
-      if (keyword.value === '') return protosFromStore
+  for (const proto of protosFromStore) {
+    const services = []
 
-      const filteredProtos = []
+    for (const service of proto.services) {
+      const methods = []
 
-      for (const proto of protosFromStore) {
-        const services = []
-
-        for (const service of proto.services) {
-          const methods = []
-
-          for (const method of service.methods) {
-            if (method.method.toLowerCase().includes(keyword.value.toLowerCase())) {
-              methods.push(method)
-            }
-          }
-
-          services.push({
-            ...service,
-            methods
-          })
-        }
-
-        if (services.length > 0) {
-          filteredProtos.push({
-            ...proto,
-            services
-          })
+      for (const method of service.methods) {
+        if (method.method.toLowerCase().includes(keyword.value.toLowerCase())) {
+          methods.push(method)
         }
       }
 
-      return filteredProtos
-    })
-
-    const handleChooseProtoFile = async () => {
-      const path = await ipcRenderer.invoke(CHOOSE_FILES)
-
-      await store.dispatch('protoParser/parseProtoFile', { workspaceId: currentWorkspace.value.id, path })
-    }
-
-    const handleEdit = ({ protoName, serviceName, method }) => {
-      store.commit('protoStub/setCurrentMethod', {
-        workspaceId: currentWorkspace.value.id,
-        path: `/${protoName}.${serviceName}/${method.method}`,
-        returnType: method.returnType
+      services.push({
+        ...service,
+        methods
       })
     }
 
-    const handleRightClick = (protoName) => {
-      ipcRenderer.send(NAVBAR_LIST_ITEM_CLICK, { protoName })
-    }
-
-    return {
-      keyword,
-      protos,
-      handleChooseProtoFile,
-      handleEdit,
-      handleRightClick
+    if (services.length > 0) {
+      filteredProtos.push({
+        ...proto,
+        services
+      })
     }
   }
+
+  return filteredProtos
+})
+
+const handleChooseProtoFile = async () => {
+  const path = await ipcRenderer.invoke(CHOOSE_FILES)
+
+  await store.dispatch('protoParser/parseProtoFile', { workspaceId: currentWorkspace.value.id, path })
+}
+
+const handleEdit = ({ protoName, serviceName, method }) => {
+  store.commit('protoStub/setCurrentMethod', {
+    workspaceId: currentWorkspace.value.id,
+    path: `/${protoName}.${serviceName}/${method.method}`,
+    returnType: method.returnType
+  })
+}
+
+const handleRightClick = (protoName) => {
+  ipcRenderer.send(NAVBAR_LIST_ITEM_CLICK, { protoName })
 }
 </script>
 

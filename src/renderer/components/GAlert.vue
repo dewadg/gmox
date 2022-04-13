@@ -9,30 +9,22 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { onMounted, ref } from 'vue'
 import { ipcRenderer } from 'electron'
 import { IPC_MAIN_ERROR } from '@/shared/constants/ipcEvents'
 
-export default {
-  setup() {
-    const errorMessage = ref('')
+const errorMessage = ref('')
 
-    onMounted(() => {
-      ipcRenderer.on(IPC_MAIN_ERROR, (_, args) => {
-        errorMessage.value = args.message
+onMounted(() => {
+  ipcRenderer.on(IPC_MAIN_ERROR, (_, args) => {
+    errorMessage.value = args.message
 
-        setTimeout(() => {
-          errorMessage.value = ''
-        }, 2000)
-      })
-    })
-
-    return {
-      errorMessage
-    }
-  }
-}
+    setTimeout(() => {
+      errorMessage.value = ''
+    }, 2000)
+  })
+})
 </script>
 
 <style lang="scss">

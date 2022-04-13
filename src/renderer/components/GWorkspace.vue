@@ -10,22 +10,12 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import GTabs from './GTabs'
 import GNavbar from './GNavbar'
 import GSidebar from './GSidebar'
 import GStubEditor from './GStubEditor'
 import GRequestLog from './GRequestLog'
-
-export default {
-  components: {
-    GTabs,
-    GNavbar,
-    GSidebar,
-    GStubEditor,
-    GRequestLog
-  }
-}
 </script>
 
 <style lang="scss">

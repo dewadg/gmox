@@ -50,98 +50,77 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { GRPC_SERVER_STATE } from '../store/grpcServer.store'
 import GButton from './GButton.vue'
 import useWorkspace from '@/renderer/composables/workspace'
 
-export default {
-  components: {
-    GButton
-  },
+const store = useStore()
 
-  setup() {
-    const store = useStore()
+const isAddressValid = ref(true)
 
-    const isAddressValid = ref(true)
+const {
+  currentWorkspace,
+  renameWorkspace,
+  changeWorkspaceAddress
+} = useWorkspace({ store })
 
-    const {
-      currentWorkspace,
-      renameWorkspace,
-      changeWorkspaceAddress
-    } = useWorkspace({ store })
+const address = computed(() => `${currentWorkspace.value.address}:${currentWorkspace.value.port}`)
 
-    const address = computed(() => `${currentWorkspace.value.address}:${currentWorkspace.value.port}`)
+const currentServerState = computed(() => store.getters['grpcServer/currentState'](currentWorkspace.value.id))
 
-    const currentServerState = computed(() => store.getters['grpcServer/currentState'](currentWorkspace.value.id))
+const handleTurnOnServer = () => {
+  const stubs = new Map(Object.entries({ ...store.getters['protoStub/getStubMap'](currentWorkspace.value.id) }))
 
-    const handleTurnOnServer = () => {
-      const stubs = new Map(Object.entries({ ...store.getters['protoStub/getStubMap'](currentWorkspace.value.id) }))
-
-      const protos = store.getters['protoParser/protos'](currentWorkspace.value.id).map(proto => ({
-        filePath: [...proto.filePath],
-        proto: proto.proto,
-        services: proto.services.map(service => ({
-          ...service,
-          methods: service.methods.map(method => ({
-            ...method
-          }))
-        }))
+  const protos = store.getters['protoParser/protos'](currentWorkspace.value.id).map(proto => ({
+    filePath: [...proto.filePath],
+    proto: proto.proto,
+    services: proto.services.map(service => ({
+      ...service,
+      methods: service.methods.map(method => ({
+        ...method
       }))
+    }))
+  }))
 
-      return store.dispatch('grpcServer/turnOn', {
-        workspaceId: currentWorkspace.value.id,
-        address: address.value,
-        protos,
-        stubs
-      })
-    }
+  return store.dispatch('grpcServer/turnOn', {
+    workspaceId: currentWorkspace.value.id,
+    address: address.value,
+    protos,
+    stubs
+  })
+}
 
-    const handleTurnOffServer = () => store.dispatch('grpcServer/turnOff', { workspaceId: currentWorkspace.value.id })
+const handleTurnOffServer = () => store.dispatch('grpcServer/turnOff', { workspaceId: currentWorkspace.value.id })
 
-    const handleRestartServer = async () => {
-      await handleTurnOffServer()
-      await handleTurnOnServer()
-    }
+const handleRestartServer = async () => {
+  await handleTurnOffServer()
+  await handleTurnOnServer()
+}
 
-    const handleWorkspaceNameChange = (event) => {
-      renameWorkspace({
-        id: currentWorkspace.value.id,
-        name: event.target.value
-      })
-    }
+const handleWorkspaceNameChange = (event) => {
+  renameWorkspace({
+    id: currentWorkspace.value.id,
+    name: event.target.value
+  })
+}
 
-    const handleAddressChange = (event) => {
-      const [address = '', port = ''] = event.target.value.split(':')
-      if (!address || !port) {
-        isAddressValid.value = false
-        return
-      }
-
-      changeWorkspaceAddress({
-        id: currentWorkspace.value.id,
-        address,
-        port
-      })
-
-      isAddressValid.value = true
-    }
-
-    return {
-      GRPC_SERVER_STATE,
-      isAddressValid,
-      address,
-      currentWorkspace,
-      currentServerState,
-      handleTurnOnServer,
-      handleTurnOffServer,
-      handleRestartServer,
-      handleWorkspaceNameChange,
-      handleAddressChange
-    }
+const handleAddressChange = (event) => {
+  const [address = '', port = ''] = event.target.value.split(':')
+  if (!address || !port) {
+    isAddressValid.value = false
+    return
   }
+
+  changeWorkspaceAddress({
+    id: currentWorkspace.value.id,
+    address,
+    port
+  })
+
+  isAddressValid.value = true
 }
 </script>
 

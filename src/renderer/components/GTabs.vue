@@ -33,38 +33,25 @@
   </ul>
 </template>
 
-<script>
+<script setup>
 import { useStore } from 'vuex'
 import useWorkspace from '../composables/workspace'
 
-export default {
-  setup() {
-    const store = useStore()
+const store = useStore()
 
-    const {
-      workspaces,
-      currentWorkspace,
-      createWorkspace,
-      closeWorkspace,
-      setWorkspace
-    } = useWorkspace({ store })
+const {
+  workspaces,
+  currentWorkspace,
+  createWorkspace,
+  closeWorkspace,
+  setWorkspace
+} = useWorkspace({ store })
 
-    const handleCloseWorkspace = (id) => closeWorkspace(id)
+const handleCloseWorkspace = (id) => closeWorkspace(id)
 
-    const handleSetWorkspace = (id) => setWorkspace(id)
+const handleSetWorkspace = (id) => setWorkspace(id)
 
-    const handleCreateNewWorkspace = () => createWorkspace()
-
-    return {
-      workspaces,
-      currentWorkspace,
-
-      handleCloseWorkspace,
-      handleSetWorkspace,
-      handleCreateNewWorkspace
-    }
-  }
-}
+const handleCreateNewWorkspace = () => createWorkspace()
 </script>
 
 <style lang="scss">

@@ -8,40 +8,25 @@
   </div>
 </template>
 
-<script>
-
+<script setup>
 import { useStore } from 'vuex'
 import GButton from './GButton'
 import useWorkspace from '@/renderer/composables/workspace'
 
-export default {
-  components: {
-    GButton
-  },
+const store = useStore()
 
-  setup() {
-    const store = useStore()
+const {
+  isWorkspaceSet,
+  createWorkspace,
+  setWorkspace
+} = useWorkspace({ store })
 
-    const {
-      isWorkspaceSet,
-      createWorkspace,
-      setWorkspace
-    } = useWorkspace({ store })
+const handleCreateWorkspace = () => {
+  const id = createWorkspace()
 
-    const handleCreateWorkspace = () => {
-      const id = createWorkspace()
+  setWorkspace(id)
 
-      setWorkspace(id)
-
-      store.commit('grpcServer/register', id)
-    }
-
-    return {
-      isWorkspaceSet,
-
-      handleCreateWorkspace
-    }
-  }
+  store.commit('grpcServer/register', id)
 }
 </script>
 

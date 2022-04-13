@@ -5,7 +5,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { computed, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { ipcRenderer } from 'electron'
@@ -18,70 +18,62 @@ import {
 } from '@/shared/constants/ipcEvents'
 import GAlert from '@/renderer/components/GAlert.vue'
 
-export default {
-  components: {
-    GAlert
-  },
+const store = useStore()
 
-  setup() {
-    const store = useStore()
+const currentWorkspace = computed(() => store.getters['workspace/current'])
 
-    const currentWorkspace = computed(() => store.getters['workspace/current'])
+const restoreStores = () => {
+  const mutations = Object.keys(store._mutations)
 
-    const restoreStores = () => {
-      const mutations = Object.keys(store._mutations)
+  for (const mutation of mutations) {
+    if (!mutation.endsWith('/restore')) continue
 
-      for (const mutation of mutations) {
-        if (!mutation.endsWith('/restore')) continue
-
-        store.commit(mutation)
-      }
-    }
-
-    const backupStores = () => {
-      const mutations = Object.keys(store._mutations).filter(item => item.endsWith('/backup'))
-
-      setInterval(() => {
-        mutations.forEach((mutation) => {
-          store.commit(mutation)
-        })
-      }, 5000)
-    }
-
-    const turnOffAllServers = () => {
-      setTimeout(() => {
-        ipcRenderer.invoke(TURN_OFF_ALL_GRPC_SERVERS, null)
-
-        store.commit('grpcServer/turnAllOff')
-      }, 1000)
-    }
-
-    onMounted(() => {
-      ipcRenderer.on(INCOMING_REQUEST, (_, args) => {
-        store.commit('requestLog/log', { ...args })
-      })
-
-      ipcRenderer.on(REMOVE_PROTO, (_, { protoName }) => {
-        store.commit('protoParser/removeProto', {
-          workspaceId: currentWorkspace.value.id,
-          protoName
-        })
-      })
-
-      ipcRenderer.on(GRPC_SERVER_ON, (_, { workspaceId }) => {
-        store.commit('grpcServer/turnOn', workspaceId)
-      })
-
-      ipcRenderer.on(GRPC_SERVER_OFF, (_, { workspaceId }) => {
-        store.commit('grpcServer/turnOff', workspaceId)
-      })
-
-      restoreStores()
-      backupStores()
-      turnOffAllServers()
-    })
+    store.commit(mutation)
   }
 }
+
+const backupStores = () => {
+  const mutations = Object.keys(store._mutations).filter(item => item.endsWith('/backup'))
+
+  setInterval(() => {
+    mutations.forEach((mutation) => {
+      store.commit(mutation)
+    })
+  }, 5000)
+}
+
+const turnOffAllServers = () => {
+  setTimeout(() => {
+    ipcRenderer.invoke(TURN_OFF_ALL_GRPC_SERVERS, null)
+
+    store.commit('grpcServer/turnAllOff')
+  }, 1000)
+}
+
+onMounted(() => {
+  ipcRenderer.on(INCOMING_REQUEST, (_, args) => {
+    store.commit('requestLog/log', { ...args })
+  })
+
+  ipcRenderer.on(REMOVE_PROTO, (_, { protoName }) => {
+    store.commit('protoParser/removeProto', {
+      workspaceId: currentWorkspace.value.id,
+      protoName
+    })
+  })
+
+  ipcRenderer.on(GRPC_SERVER_ON, (_, { workspaceId }) => {
+    store.commit('grpcServer/turnOn', workspaceId)
+  })
+
+  ipcRenderer.on(GRPC_SERVER_OFF, (_, { workspaceId }) => {
+    store.commit('grpcServer/turnOff', workspaceId)
+  })
+
+  restoreStores()
+  backupStores()
+  turnOffAllServers()
+})
 </script>
 
 <style lang="scss">

@@ -17,22 +17,16 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 import { GRPC_SERVER_STATE } from '../store/grpcServer.store'
 
-export default {
-  setup() {
-    const store = useStore()
+const store = useStore()
 
-    return {
-      GRPC_SERVER_STATE,
+const grpcServerState = computed(() => store.getters['grpcServer/currentState'])
 
-      grpcServerState: computed(() => store.getters['grpcServer/currentState']),
-      turnGrpcServerOn: () => store.dispatch('grpcServer/turnOn'),
-      turnGrpcServerOff: () => store.dispatch('grpcServer/turnOff')
-    }
-  }
-}
+const turnGrpcServerOn = () => store.dispatch('grpcServer/turnOn')
+
+const turnGrpcServerOff = () => store.dispatch('grpcServer/turnOff')
 </script>
